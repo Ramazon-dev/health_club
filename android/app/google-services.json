@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "726097598092",
+    "project_id": "health-club-89c0e",
+    "storage_bucket": "health-club-89c0e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726097598092:android:057991d07e323e14790da9",
+        "android_client_info": {
+          "package_name": "com.example.health_club"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "726097598092-kunmgfes1i0s1ajmso4kt2ut8je4kdqf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.health_club",
+            "certificate_hash": "c183ad9e8a8a2d1b3eff57b4e6e1d594cad06e33"
+          }
+        },
+        {
+          "client_id": "726097598092-i04t4b8j7m0o4p9hcm56lvscvukmu1hl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC76Y3bLp3ZfIpTTUMHVfpIB_yHkpvA64o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726097598092-i04t4b8j7m0o4p9hcm56lvscvukmu1hl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "726097598092-2aohbhsu00srhut5qieijkrm92pj5i2a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.healthClub"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

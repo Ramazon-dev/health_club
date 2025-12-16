@@ -1,0 +1,60 @@
+class AppAssets {
+  static const String logoSvg = 'assets/images/logo.svg';
+  static const String award = 'assets/images/award.svg';
+  static const String awardPng = 'assets/images/award.png';
+  static const String firstVisit = 'assets/images/first_visit.svg';
+  static const String firstVisitPng = 'assets/images/first_visit.png';
+  static const String checkIns = 'assets/images/check_ins.png';
+  static const String card = 'assets/images/card.png';
+  static const String visits3 = 'assets/images/3_visits.png';
+  static const String achievements = 'assets/images/achievements.png';
+  static const String achievementPng = 'assets/images/achievement.png';
+  static const String mila = 'assets/images/mila.png';
+  static const String mila2 = 'assets/images/mila2.png';
+  static const String mila3 = 'assets/images/mila3.png';
+  static const String milaLove = 'assets/images/mila_love.svg';
+  static const String milaLovePng = 'assets/images/mila_love.png';
+  static const String marker = 'assets/images/marker.png';
+  static const String body = 'assets/images/body.svg';
+  static const String bodyPng = 'assets/images/body.png';
+
+  static const String search = 'assets/icons/search.svg';
+  static const String searchSelected = 'assets/icons/search_selected.svg';
+  static const String calendar = 'assets/icons/calendar.svg';
+  static const String calendarSelected = 'assets/icons/calendar_selected.svg';
+  static const String champion = 'assets/icons/champion.svg';
+  static const String championSelected = 'assets/icons/champion_selected.svg';
+  static const String profile = 'assets/icons/profile.svg';
+  static const String profileSelected = 'assets/icons/profile_selected.svg';
+
+  static const String scan = 'assets/icons/scan.svg';
+  static const String target = 'assets/icons/target.svg';
+  static const String progress = 'assets/icons/progress.svg';
+  static const String apple = 'assets/icons/apple.svg';
+  static const String google = 'assets/icons/google.svg';
+  static const String settings = 'assets/icons/setting.svg';
+  static const String map = 'assets/icons/map.svg';
+  static const String mapWhite = 'assets/icons/map_white.svg';
+  static const String delete = 'assets/icons/delete.svg';
+  static const String trash = 'assets/icons/trash.svg';
+  static const String achievement = 'assets/icons/achievement.svg';
+  static const String calendarMonth = 'assets/icons/calendar_month.svg';
+  static const String notification = 'assets/icons/notification.svg';
+  static const String notificationPinned = 'assets/icons/notification_pinned.svg';
+  static const String edit = 'assets/icons/edit.svg';
+  static const String messageVector = 'assets/icons/message_vector.svg';
+  static const String message = 'assets/icons/message.svg';
+  static const String bodyHuman = 'assets/icons/body_human.svg';
+  static const String file = 'assets/icons/file.svg';
+  static const String snow = 'assets/icons/snow.svg';
+  static const String training = 'assets/icons/training.svg';
+  static const String time = 'assets/icons/time.svg';
+  static const String location = 'assets/icons/location.svg';
+  static const String userSquare = 'assets/icons/user_square.svg';
+  static const String upload = 'assets/icons/upload.svg';
+  static const String organicFood = 'assets/icons/organic_food.svg';
+  static const String noteEdit = 'assets/icons/note_edit.svg';
+
+  static const String messagePng = 'assets/icons/message.png';
+
+}
