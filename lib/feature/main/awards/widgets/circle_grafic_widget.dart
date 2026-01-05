@@ -32,6 +32,7 @@ class MultiRingProgress extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.only(top: 70.h),
           child: Text(
+            // '',
             '${(progress * 100).toInt()}%',
             style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w500, color: ThemeColors.base950),
           ),

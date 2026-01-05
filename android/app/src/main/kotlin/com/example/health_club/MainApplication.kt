@@ -1,4 +1,4 @@
-package com.example.health_club
+package com.club.a35healthclients
 
 import android.app.Application
 

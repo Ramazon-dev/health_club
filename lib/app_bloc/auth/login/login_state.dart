@@ -13,8 +13,8 @@ final class LoginLoading extends LoginState {
 }
 
 final class LoginSuccess extends LoginState {
-  final String verificationId;
-  const LoginSuccess(this.verificationId);
+  final String verifyCode;
+  const LoginSuccess(this.verifyCode);
 }
 
 final class LoginError extends LoginState {

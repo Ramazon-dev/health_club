@@ -51,7 +51,7 @@ class AppbarWidget extends AppBar {
                  margin: EdgeInsets.only(left: 4.w, top: 10.h),
                  height: 54.h,
                  width: 54.h,
-                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.r), color: iconColor),
+                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.r), color: buttonColor),
                  child: e,
                ),
              )

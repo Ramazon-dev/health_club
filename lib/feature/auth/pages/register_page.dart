@@ -2,27 +2,29 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:health_club/app_bloc/app_bloc.dart';
 import 'package:health_club/domain/core/core.dart';
-import 'package:health_club/domain/core/extensions/date_format.dart';
 import 'package:health_club/feature/auth/pages/widgets/list_item.dart';
-import 'package:health_club/feature/auth/pages/widgets/reviews_widget.dart';
+import 'package:health_club/router/app_router.gr.dart';
+import '../../../data/network/model/clubs_response.dart';
+import '../../../data/network/model/auth/wizard_options_response.dart';
 import '../../../design_system/design_system.dart';
-import '../../../di/init.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 @RoutePage()
-class RegisterPage extends StatefulWidget implements AutoRouteWrapper {
-  const RegisterPage({super.key});
+class RegisterPage extends StatefulWidget {
+  final int step;
+
+  const RegisterPage({super.key, required this.step});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 
-  @override
-  Widget wrappedRoute(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => getIt<RegisterCubit>())],
-      child: this,
-    );
-  }
+  // @override
+  // Widget wrappedRoute(BuildContext context) {
+  //   // return MultiBlocProvider(
+  //   //   providers: [BlocProvider(create: (context) => getIt<RegisterCubit>())],
+  //   //   child: this,
+  //   // );
+  // }
 }
 
 class _RegisterPageState extends State<RegisterPage> {
@@ -38,92 +40,94 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController lastnameController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
-  List<ConcernItem> listOfConcerns = [
-    ConcernItem(
-      title: 'Хроническая боль (спина, суставы)',
-      subtitle:
-          'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
-    ),
-    ConcernItem(
-      title: 'Тревога за здоровье (давление, сахар)',
-      subtitle:
-          'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
-    ),
-    ConcernItem(
-      title: 'Лишный вес и отражение в зеркале',
-      subtitle:
-          'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
-    ),
-    ConcernItem(
-      title: 'Постоянный усталость и чувство разбитости',
-      subtitle:
-          'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
-    ),
-    ConcernItem(
-      title: 'Другое',
-      subtitle:
-          'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
-    ),
-  ];
 
-  ValueNotifier<ConcernItem?> selectedConcernNotifier = ValueNotifier(null);
+  // List<ConcernItem> listOfConcerns = [
+  //   ConcernItem(
+  //     title: 'Хроническая боль (спина, суставы)',
+  //     subtitle:
+  //         'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Тревога за здоровье (давление, сахар)',
+  //     subtitle:
+  //         'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Лишный вес и отражение в зеркале',
+  //     subtitle:
+  //         'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Постоянный усталость и чувство разбитости',
+  //     subtitle:
+  //         'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Другое',
+  //     subtitle:
+  //         'Это чувство знакомо многим. Но главное - вы готовы это изменить! Мы помоем вам не только сбросить вес, но и обрести уверенность.',
+  //   ),
+  // ];
 
-  List<ConcernItem> listOfProblems = [
-    ConcernItem(
-      title: 'Грыжи или протрузии',
-      subtitle:
-          'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
-    ),
-    ConcernItem(
-      title: 'Диабет / Метаболический синдром',
-      subtitle:
-          'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
-    ),
-    ConcernItem(
-      title: 'Гипертония (высокое давление)',
-      subtitle:
-          'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
-    ),
-    ConcernItem(
-      title: 'Ограничения от врачей',
-      subtitle:
-          'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
-    ),
-    ConcernItem(
-      title: 'Другое',
-      subtitle:
-          'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
-    ),
-  ];
+  ValueNotifier<WizardOptionResponse?> selectedConcernNotifier = ValueNotifier(null);
 
-  List<ConcernItem> listOfTargets = [
-    ConcernItem(
-      title: 'Укрепление здоровья',
-      subtitle:
-          'Иван, вы хотите снижение веса. Это отличная цель! Но давайте честно: сейчас вы в “Точке А”, где, возможно, чувствуете дискомфорт, усталость и неуверенность. Чтобы прийти в “Точку Б” - к легкости, энергии и гордости за свое отражение в зеркале - нужен точный и безопасный план. И ключ к этому плану - детальная информация о составе вашего тела.',
-    ),
-    ConcernItem(
-      title: 'Снижение веса',
-      subtitle:
-          'Иван, вы хотите снижение веса. Это отличная цель! Но давайте честно: сейчас вы в “Точке А”, где, возможно, чувствуете дискомфорт, усталость и неуверенность. Чтобы прийти в “Точку Б” - к легкости, энергии и гордости за свое отражение в зеркале - нужен точный и безопасный план. И ключ к этому плану - детальная информация о составе вашего тела.',
-    ),
-    ConcernItem(
-      title: 'Увеличение мышечной массы',
-      subtitle:
-          'Иван, вы хотите снижение веса. Это отличная цель! Но давайте честно: сейчас вы в “Точке А”, где, возможно, чувствуете дискомфорт, усталость и неуверенность. Чтобы прийти в “Точку Б” - к легкости, энергии и гордости за свое отражение в зеркале - нужен точный и безопасный план. И ключ к этому плану - детальная информация о составе вашего тела.',
-    ),
-    ConcernItem(
-      title: 'Другое',
-      subtitle:
-          'Иван, вы хотите снижение веса. Это отличная цель! Но давайте честно: сейчас вы в “Точке А”, где, возможно, чувствуете дискомфорт, усталость и неуверенность. Чтобы прийти в “Точку Б” - к легкости, энергии и гордости за свое отражение в зеркале - нужен точный и безопасный план. И ключ к этому плану - детальная информация о составе вашего тела.',
-    ),
-  ];
+  // List<ConcernItem> listOfProblems = [
+  //   ConcernItem(
+  //     title: 'Грыжи или протрузии',
+  //     subtitle:
+  //         'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Диабет / Метаболический синдром',
+  //     subtitle:
+  //         'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Гипертония (высокое давление)',
+  //     subtitle:
+  //         'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Ограничения от врачей',
+  //     subtitle:
+  //         'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Другое',
+  //     subtitle:
+  //         'Наши Smart-тренажеры полностью исключают осевую нагрузку, позволяя безопасно укреплять мышечный корсет',
+  //   ),
+  // ];
 
-  ValueNotifier<ConcernItem?> selectedTargetNotifier = ValueNotifier(null);
-  ValueNotifier<ConcernItem?> selectedProblemNotifier = ValueNotifier(null);
-  ValueNotifier<BodyDetails?> selectedBodyDetailNotifier = ValueNotifier(null);
+  // List<ConcernItem> listOfTargets = [
+  //   ConcernItem(
+  //     title: 'Укрепление здоровья',
+  //     subtitle:
+  //         'Иван, вы хотите снижение веса. Это отличная цель! Но давайте честно: сейчас вы в “Точке А”, где, возможно, чувствуете дискомфорт, усталость и неуверенность. Чтобы прийти в “Точку Б” - к легкости, энергии и гордости за свое отражение в зеркале - нужен точный и безопасный план. И ключ к этому плану - детальная информация о составе вашего тела.',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Снижение веса',
+  //     subtitle:
+  //         'Иван, вы хотите снижение веса. Это отличная цель! Но давайте честно: сейчас вы в “Точке А”, где, возможно, чувствуете дискомфорт, усталость и неуверенность. Чтобы прийти в “Точку Б” - к легкости, энергии и гордости за свое отражение в зеркале - нужен точный и безопасный план. И ключ к этому плану - детальная информация о составе вашего тела.',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Увеличение мышечной массы',
+  //     subtitle:
+  //         'Иван, вы хотите снижение веса. Это отличная цель! Но давайте честно: сейчас вы в “Точке А”, где, возможно, чувствуете дискомфорт, усталость и неуверенность. Чтобы прийти в “Точку Б” - к легкости, энергии и гордости за свое отражение в зеркале - нужен точный и безопасный план. И ключ к этому плану - детальная информация о составе вашего тела.',
+  //   ),
+  //   ConcernItem(
+  //     title: 'Другое',
+  //     subtitle:
+  //         'Иван, вы хотите снижение веса. Это отличная цель! Но давайте честно: сейчас вы в “Точке А”, где, возможно, чувствуете дискомфорт, усталость и неуверенность. Чтобы прийти в “Точку Б” - к легкости, энергии и гордости за свое отражение в зеркале - нужен точный и безопасный план. И ключ к этому плану - детальная информация о составе вашего тела.',
+  //   ),
+  // ];
+
+  ValueNotifier<WizardOptionResponse?> selectedProblemNotifier = ValueNotifier(null);
+  ValueNotifier<WizardOptionResponse?> selectedTargetNotifier = ValueNotifier(null);
+
+  // ValueNotifier<BodyDetails?> selectedBodyDetailNotifier = ValueNotifier(null);
   ValueNotifier<bool?> genderNotifier = ValueNotifier(null);
-  ValueNotifier<int?> selectedClubNotifier = ValueNotifier(null);
+  ValueNotifier<ClubResponse?> selectedClubNotifier = ValueNotifier(null);
 
   bool showOtherConcern = false;
   bool showOtherProblem = false;
@@ -134,224 +138,245 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<RegisterCubit, RegisterState>(
-      listener: (context, state) {},
-      builder: (context, state) => Scaffold(
-        // extendBody: true,
-        backgroundColor: Colors.white,
-        // appBar: AppbarWidget(
-        //   title: Text(
-        //     'Регистрация',
-        //     style: TextStyle(color: ThemeColors.baseBlack, fontSize: 16.sp, fontWeight: FontWeight.w500),
-        //   ),
-        // ),
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(16.r),
-          child: state is RegisterInitial
-              ? ButtonWithScale(
-                  onPressed: () {
-                    final cubit = context.read<RegisterCubit>();
-                    cubit.changeToName();
-                  },
-                  text: 'Начать диагностику',
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ButtonWithScale(
-                      width: 0.3.sw,
-                      height: 60.h,
-                      color: ThemeColors.base100,
-                      onPressed: () {
-                        changeScroll();
-                        final cubit = context.read<RegisterCubit>();
-                        if (state is RegisterName) {
-                          cubit.changeToInitial();
-                        } else if (state is RegisterConcerns) {
-                          cubit.changeToName();
-                        } else if (state is RegisterProblems) {
-                          cubit.changeToConcerns();
-                        } else if (state is RegisterBodyDetails) {
-                          cubit.changeToProblems();
-                        } else if (state is RegisterBodyDetailsResult) {
-                          cubit.changeToBodyDetails();
-                        } else if (state is RegisterTarget) {
-                          cubit.changeToBodyDetailsResult();
-                        } else if (state is RegisterAddress) {
-                          cubit.changeToTarget();
-                        } else if (state is RegisterDiagnostics) {
-                          cubit.changeToAddress();
-                        } else if (state is RegisterSuccess) {
-                          cubit.changeToDiagnostics();
-                        }
-                      },
-                      text: 'Назад',
-                      textStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: ThemeColors.baseBlack),
-                    ),
-                    ButtonWithScale(
-                      width: 0.58.sw,
-                      height: 60.h,
-                      onPressed: () {
-                        changeScroll();
-                        final cubit = context.read<RegisterCubit>();
-                        if (state is RegisterInitial) {
-                          cubit.changeToName();
-                        } else if (state is RegisterName) {
-                          if (nameController.text.isNotEmpty) {
-                            cubit.changeToConcerns();
-                          } else {
-                            context.showSnackBar('Введите Имя');
-                          }
-                        } else if (state is RegisterConcerns) {
-                          if (selectedConcernNotifier.value != null) {
-                            if (!showOtherConcern) {
-                              cubit.changeToProblems();
-                            } else if (showOtherConcern && otherConcernController.text.isNotEmpty) {
-                              cubit.changeToProblems();
-                            } else if (showOtherConcern && otherConcernController.text.isEmpty) {
-                              context.showSnackBar('Введите что вас беспокоит');
-                            }
-                          } else {
-                            context.showSnackBar('Выберите что вас беспокоит');
-                          }
-                        } else if (state is RegisterProblems) {
-                          if (selectedProblemNotifier.value != null) {
-                            if (!showOtherProblem) {
-                              cubit.changeToBodyDetails();
-                            } else if (showOtherProblem && otherProblemController.text.isNotEmpty) {
-                              cubit.changeToBodyDetails();
-                            } else if (showOtherProblem && otherProblemController.text.isEmpty) {
-                              context.showSnackBar('Введите какие у вас проблемы');
-                            }
-                          } else {
-                            context.showSnackBar('Выберите из списка');
-                          }
-                        } else if (state is RegisterBodyDetails) {
-                          if (heightController.text.isEmpty) {
-                            context.showSnackBar('Введите свой рост');
-                          } else if (widthController.text.isEmpty) {
-                            context.showSnackBar('Введите свой вес');
-                          } else if (birthController.text.isEmpty) {
-                            context.showSnackBar('Введите дата рождения');
-                          } else if (genderNotifier.value == null) {
-                            context.showSnackBar('Выберите пол');
-                          } else {
-                            cubit.changeToBodyDetailsResult();
-                          }
-                        } else if (state is RegisterBodyDetailsResult) {
-                          cubit.changeToTarget();
-                        } else if (state is RegisterTarget) {
-                          if (selectedTargetNotifier.value != null) {
-                            if (!showOtherTarget) {
-                              cubit.changeToAddress();
-                            } else if (showOtherTarget && otherTargetController.text.isNotEmpty) {
-                              cubit.changeToAddress();
-                            } else if (showOtherTarget && otherTargetController.text.isEmpty) {
-                              context.showSnackBar('Введите какие у вас цель');
-                            }
-                          } else {
-                            context.showSnackBar('Выберите цель');
-                          }
-                        } else if (state is RegisterAddress) {
-                          if (addressController.text.isNotEmpty) {
-                            cubit.changeToDiagnostics();
-                          } else {
-                            context.showSnackBar('Введите свой адрес');
-                          }
-                        } else if (state is RegisterDiagnostics) {
-                          if (selectedClubNotifier.value == null) {
-                            context.showSnackBar('Выберите клуб');
-                          } else if (lastnameController.text.isEmpty) {
-                            context.showSnackBar('Введите фамилию');
-                          } else if (dateController.text.isEmpty) {
-                            context.showSnackBar('Выберите дату');
-                          } else if (timeController.text.isEmpty) {
-                            context.showSnackBar('Выберите время');
-                          } else {
-                            cubit.changeToSuccess();
-                          }
-                        } else if (state is RegisterSuccess) {
-                          final json = {
-                            'name': nameController.text,
-                            'concern': showOtherConcern
-                                ? selectedConcernNotifier.value?.title
-                                : otherConcernController.text,
-                            'problem': showOtherProblem
-                                ? selectedProblemNotifier.value?.title
-                                : otherProblemController.text,
-                            'height': heightController.text,
-                            'width': widthController.text,
-                            'birth': birthController.text,
-                            'gender': genderNotifier.value == true ? 'male' : 'female',
-                            'target': showOtherTarget
-                                ? selectedTargetNotifier.value?.title
-                                : otherTargetController.text,
-                            'address': addressController.text,
-                            'club': selectedClubNotifier.value,
-                            'lastname': lastnameController.text,
-                            'date': dateController.text,
-                            'time': timeController.text,
-                          };
-                          print('object register result is $json');
-                          cubit.changeToInitial();
-                        }
-                        // setState(() {});
-                        // if (state.name == null) {
-                        //   context.read<RegisterCubit>().changeName(nameController.text);
-                        // }
-                        // final corner = selectedConcernNotifier.value;
-                        // if (corner != null) {
-                        //   if (corner.title == 'Другое') {
-                        //     if (otherController.text.isNotEmpty) {
-                        //       context.read<RegisterCubit>().changeConcern(otherController.text);
-                        //     } else {
-                        //       context.showSnackBar('Введите текст');
-                        //     }
-                        //   } else {
-                        //     context.read<RegisterCubit>().changeConcern(corner.title);
-                        //   }
-                        // }
-                        // final problem = selectedProblemNotifier.value;
-                        // if (problem != null) {
-                        //   if (problem.title == 'Другое') {
-                        //     if (otherProblemController.text.isNotEmpty) {
-                        //       context.read<RegisterCubit>().changeProblem(otherController.text);
-                        //     } else {
-                        //       context.showSnackBar('Введите текст');
-                        //     }
-                        //   } else {
-                        //     context.read<RegisterCubit>().changeProblem(problem.title);
-                        //   }
-                        // }
-                        // final height = heightController.text;
-                        // final width = widthController.text;
-                        // final birth = birthController.text;
-                        // final gender = genderNotifier.value;
-                        // if (height.isNotEmpty && width.isNotEmpty && birth.isNotEmpty && gender != null) {
-                        //   final bodyDetail = BodyDetails(height: height, width: width, birthDate: birth, gender: gender);
-                        //   context.read<RegisterCubit>().changeBodyDetail(bodyDetail);
-                        //   selectedBodyDetailNotifier.value = bodyDetail;
-                        // }
-                      },
-                      text: 'Продолжить',
-                    ),
-                  ],
-                ),
-        ),
+  void initState() {
+    if (widget.step == 0 || widget.step == 1) {
+      // context.read<RegisterCubit>().changeToInitial();
+    }
+    super.initState();
+  }
 
-        body: SizedBox(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBody: true,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        toolbarHeight: kToolbarHeight + 10.h,
+        leadingWidth: 20.w + 54.h,
+        leading: InkWell(
+          onTap: () {
+            Navigator.of(context).maybePop();
+          },
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.only(left: 16.r, top: 10.h),
+              height: 54.h,
+              width: 54.h,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.r), color: ThemeColors.base100),
+              child: Icon(Icons.arrow_back_ios_outlined, color: Colors.black, size: 18.sp),
+            ),
+          ),
+        ),
+        actions: [
+          BlocBuilder<RegisterCubit, RegisterState>(
+            builder: (context, state) {
+              if (state is RegisterDiagnostics ||
+                  state is RegisterSuccess ||
+                  state is RegisterLoading ||
+                  state is RegisterError) {
+                return SizedBox();
+              } else {
+                return TextButton(
+                  onPressed: () {
+                    context.read<RegisterCubit>().skip();
+                  },
+                  child: Text('Пропустить'),
+                );
+              }
+            },
+          ),
+        ],
+        // title: Text(
+        //   'Регистрация',
+        //   style: TextStyle(color: ThemeColors.baseBlack, fontSize: 16.sp, fontWeight: FontWeight.w500),
+        // ),
+      ),
+      bottomNavigationBar: BlocBuilder<RegisterCubit, RegisterState>(
+        builder: (context, state) {
+          print('object RegisterCubit state changed $state');
+          return Padding(
+            padding: EdgeInsets.all(16.r),
+            child: state is RegisterInitial
+                ? ButtonWithScale(
+                    onPressed: () {
+                      final cubit = context.read<RegisterCubit>();
+                      cubit.changeToName();
+                    },
+                    text: 'Начать диагностику',
+                  )
+                : ButtonWithScale(
+                    // isLoading: state is RegisterLoading,
+                    // width: 0.58.sw,
+                    // height: 60.h,
+                    text: 'Продолжить',
+                    onPressed: () {
+                      changeScroll();
+                      final cubit = context.read<RegisterCubit>();
+                      if (state is RegisterInitial) {
+                        cubit.changeToName();
+                      } else if (state is RegisterName) {
+                        cubit.uploadName(nameController.text);
+                      } else if (state is RegisterConcerns) {
+                        if (selectedConcernNotifier.value != null) {
+                          if (!showOtherConcern) {
+                            cubit.uploadConcern(selectedConcernNotifier.value?.text ?? '');
+                          } else if (showOtherConcern && otherConcernController.text.isNotEmpty) {
+                            cubit.uploadConcern(otherConcernController.text);
+                          } else if (showOtherConcern && otherConcernController.text.isEmpty) {
+                            context.showSnackBar('Введите что вас беспокоит');
+                          }
+                        } else {
+                          context.showSnackBar('Выберите что вас беспокоит');
+                        }
+                      } else if (state is RegisterProblems) {
+                        if (selectedProblemNotifier.value != null) {
+                          if (!showOtherProblem) {
+                            cubit.uploadProblem(selectedProblemNotifier.value?.text ?? '');
+                          } else if (showOtherProblem && otherProblemController.text.isNotEmpty) {
+                            cubit.uploadProblem(otherProblemController.text);
+                          } else if (showOtherProblem && otherProblemController.text.isEmpty) {
+                            context.showSnackBar('Введите какие у вас проблемы');
+                          }
+                        }
+                      } else if (state is RegisterBodyDetails) {
+                        if (heightController.text.isEmpty) {
+                          context.showSnackBar('Введите свой рост');
+                        } else if (widthController.text.isEmpty) {
+                          context.showSnackBar('Введите свой вес');
+                        } else if (birthController.text.isEmpty) {
+                          context.showSnackBar('Введите дата рождения');
+                        } else if (genderNotifier.value == null) {
+                          context.showSnackBar('Выберите пол');
+                        } else {
+                          cubit.uploadBodyDetails(
+                            height: heightController.text,
+                            width: widthController.text,
+                            birthday: birthController.text,
+                            gender: genderNotifier.value == true,
+                          );
+                        }
+                      } else if (state is RegisterBodyDetailsResult) {
+                        cubit.getTargets();
+                      } else if (state is RegisterTarget) {
+                        if (selectedTargetNotifier.value != null) {
+                          if (!showOtherTarget) {
+                            cubit.uploadTarget(selectedTargetNotifier.value?.text ?? '');
+                          } else if (showOtherTarget && otherTargetController.text.isNotEmpty) {
+                            cubit.uploadTarget(otherTargetController.text);
+                          } else if (showOtherTarget && otherTargetController.text.isEmpty) {
+                            context.showSnackBar('Введите какие у вас цель');
+                          }
+                        } else {
+                          context.showSnackBar('Выберите цель');
+                        }
+                      } else if (state is RegisterAddress) {
+                        if (addressController.text.isNotEmpty) {
+                          cubit.uploadAddress(addressController.text);
+                        } else {
+                          context.showSnackBar('Введите свой адрес');
+                        }
+                      } else if (state is RegisterDiagnostics) {
+                        if (selectedClubNotifier.value == null) {
+                          context.showSnackBar('Выберите клуб');
+                        } else if (lastnameController.text.isEmpty) {
+                          context.showSnackBar('Введите фамилию');
+                        } else if (dateController.text.isEmpty) {
+                          context.showSnackBar('Выберите дату');
+                        } else if (timeController.text.isEmpty) {
+                          context.showSnackBar('Выберите время');
+                        } else {
+                          cubit.uploadDiagnostic(
+                            surname: lastnameController.text,
+                            placeId: selectedClubNotifier.value?.id ?? 10,
+                            date: dateController.text,
+                            time: timeController.text,
+                          );
+                        }
+                      } else if (state is RegisterSuccess) {
+                        context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
+                      }
+                    },
+                  ),
+            // : Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       ButtonWithScale(
+            //         width: 0.3.sw,
+            //         height: 60.h,
+            //         color: ThemeColors.base100,
+            //         onPressed: () {
+            //           changeScroll();
+            //           final cubit = context.read<RegisterCubit>();
+            //           if (state is RegisterName) {
+            //             cubit.changeToInitial();
+            //           } else if (state is RegisterConcerns) {
+            //             cubit.changeToName();
+            //           } else if (state is RegisterProblems) {
+            //             cubit.changeToConcerns();
+            //           } else if (state is RegisterBodyDetails) {
+            //             cubit.changeToProblems();
+            //           } else if (state is RegisterBodyDetailsResult) {
+            //             cubit.changeToBodyDetails();
+            //           } else if (state is RegisterTarget) {
+            //             cubit.changeToBodyDetailsResult();
+            //           } else if (state is RegisterAddress) {
+            //             cubit.changeToTarget();
+            //           } else if (state is RegisterDiagnostics) {
+            //             cubit.changeToAddress();
+            //           } else if (state is RegisterSuccess) {
+            //             cubit.changeToDiagnostics();
+            //           } else if (state is RegisterError) {
+            //             cubit.changeToInitial();
+            //           }
+            //         },
+            //         text: 'Назад',
+            //         textStyle: TextStyle(
+            //           fontSize: 14.sp,
+            //           fontWeight: FontWeight.w500,
+            //           color: ThemeColors.baseBlack,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+          );
+        },
+      ),
+
+      body: BlocConsumer<RegisterCubit, RegisterState>(
+        buildWhen: (previous, current) => current is! RegisterLoading,
+        listener: (context, state) {
+          if (state is RegisterError) {
+            print('object RegisterCubit Error state changed ${state.message}');
+          } else if (state is RegisterConcerns) {
+            state.options.map((e) {
+              if (e.selected == true) {
+                selectedConcernNotifier.value = e;
+              }
+            }).toList();
+          } else if (state is RegisterProblems) {
+            state.options.map((e) {
+              if (e.selected == true) {
+                selectedProblemNotifier.value = e;
+              }
+            }).toList();
+          }
+        },
+        builder: (context, state) => SizedBox(
           height: 1.sh,
           child: Stack(
             children: [
               SingleChildScrollView(
                 controller: scrollController,
-                padding: EdgeInsets.all(16.r),
+                padding: EdgeInsets.only(left: 16.r, right: 16.r, bottom: 16.h, top: 16.h),
+                // padding: EdgeInsets.all(16.r),
                 physics: BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    80.height,
+                    // 80.height,
                     if (state is RegisterInitial) ...[
                       Text(
                         'Фитнес, который не навредит 💚',
@@ -392,8 +417,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         valueListenable: selectedConcernNotifier,
                         builder: (context, selectedCorner, child) => Column(
                           children: [
-                            if (selectedCorner != null && selectedCorner.title != 'Другое') ...[
-                              MessageItem(text: selectedCorner.subtitle),
+                            if (selectedCorner != null && selectedCorner.text != 'Другое') ...[
+                              MessageItem(text: selectedCorner.answer ?? ''),
                               20.height,
                             ],
                             ListView.separated(
@@ -401,18 +426,21 @@ class _RegisterPageState extends State<RegisterPage> {
                               physics: NeverScrollableScrollPhysics(),
                               padding: EdgeInsets.zero,
                               itemBuilder: (context, index) {
-                                final corner = listOfConcerns[index];
+                                final corner = state.options[index];
                                 return GestureDetector(
                                   onTap: () {
                                     selectedConcernNotifier.value = corner;
-                                    showOtherConcern = index == 4;
+                                    showOtherConcern = corner.text == 'Другое';
                                     setState(() {});
                                   },
-                                  child: ListItem(title: corner.title, selected: selectedCorner?.title == corner.title),
+                                  child: ListItem(
+                                    title: corner.text ?? '',
+                                    selected: selectedCorner?.text == corner.text,
+                                  ),
                                 );
                               },
                               separatorBuilder: (context, index) => SizedBox(height: 10.h),
-                              itemCount: listOfConcerns.length,
+                              itemCount: state.options.length,
                             ),
                           ],
                         ),
@@ -428,8 +456,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                       ],
-                      20.height,
-                      ReviewsWidget(),
+                      // 20.height,
+                      // ReviewsWidget(),
                     ] else if (state is RegisterProblems) ...[
                       MessageItem(
                         text:
@@ -440,8 +468,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         valueListenable: selectedProblemNotifier,
                         builder: (context, selectedProblem, child) => Column(
                           children: [
-                            if (selectedProblem != null && selectedProblem.title != 'Другое') ...[
-                              MessageItem(text: selectedProblem.subtitle),
+                            if (selectedProblem != null && selectedProblem.text != 'Другое') ...[
+                              MessageItem(text: selectedProblem.answer ?? ''),
                               20.height,
                             ],
                             ListView.separated(
@@ -449,35 +477,35 @@ class _RegisterPageState extends State<RegisterPage> {
                               padding: EdgeInsets.zero,
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
-                                final problem = listOfProblems[index];
+                                final problem = state.options[index];
                                 return GestureDetector(
                                   onTap: () {
                                     selectedProblemNotifier.value = problem;
-                                    showOtherProblem = index == 4;
+                                    showOtherProblem = problem.text == 'Другое';
                                     setState(() {});
                                   },
                                   child: Container(
                                     padding: EdgeInsets.all(8.r),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.r),
-                                      color: selectedProblem?.title == problem.title
+                                      color: selectedProblem?.text == problem.text
                                           ? ThemeColors.primaryColor
                                           : Colors.white,
                                       border: Border.all(color: ThemeColors.inputBorderColor),
                                     ),
                                     child: Text(
-                                      listOfConcerns[index].title,
+                                      problem.text ?? '',
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w400,
-                                        color: selectedProblem?.title == problem.title ? Colors.white : Colors.black,
+                                        color: selectedProblem?.text == problem.text ? Colors.white : Colors.black,
                                       ),
                                     ),
                                   ),
                                 );
                               },
                               separatorBuilder: (context, index) => SizedBox(height: 10.h),
-                              itemCount: listOfConcerns.length,
+                              itemCount: state.options.length,
                             ),
                           ],
                         ),
@@ -535,7 +563,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             lastDate: DateTime.now(),
                           );
                           if (date != null) {
-                            birthController.text = date.dateFormat();
+                            birthController.text = date.dateForRequest();
                           }
                         },
                         child: TextFormField(
@@ -685,7 +713,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               padding: EdgeInsets.zero,
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
-                                final target = listOfTargets[index];
+                                final target = state.options[index];
                                 return GestureDetector(
                                   onTap: () {
                                     selectedTargetNotifier.value = target;
@@ -696,28 +724,28 @@ class _RegisterPageState extends State<RegisterPage> {
                                     padding: EdgeInsets.all(8.r),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.r),
-                                      color: selectedTarget?.title == target.title
+                                      color: selectedTarget?.text == target.text
                                           ? ThemeColors.primaryColor
                                           : Colors.white,
                                       border: Border.all(color: ThemeColors.inputBorderColor),
                                     ),
                                     child: Text(
-                                      target.title,
+                                      target.text ?? '',
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w400,
-                                        color: selectedTarget?.title == target.title ? Colors.white : Colors.black,
+                                        color: selectedTarget?.text == target.text ? Colors.white : Colors.black,
                                       ),
                                     ),
                                   ),
                                 );
                               },
                               separatorBuilder: (context, index) => SizedBox(height: 10.h),
-                              itemCount: listOfTargets.length,
+                              itemCount: state.options.length,
                             ),
-                            if (selectedTarget != null && selectedTarget.title != 'Другое') ...[
+                            if (selectedTarget != null && selectedTarget.text != 'Другое') ...[
                               20.height,
-                              MessageItem(text: selectedTarget.subtitle),
+                              MessageItem(text: selectedTarget.answer ?? ''),
                             ],
                           ],
                         ),
@@ -788,11 +816,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           onChanged: (value) {
                             selectedClubNotifier.value = value;
                           },
-                          items: [
-                            DropdownMenuItem(value: 1, child: Text('data1')),
-                            DropdownMenuItem(value: 2, child: Text('data2')),
-                            DropdownMenuItem(value: 3, child: Text('data3')),
-                          ],
+                          items: state.clubs
+                              .map((e) => DropdownMenuItem(value: e, child: Text(e.title ?? '')))
+                              .toList(),
+                          // items: [
+                          //   DropdownMenuItem(value: 1, child: Text('data1')),
+                          //   DropdownMenuItem(value: 2, child: Text('data2')),
+                          //   DropdownMenuItem(value: 3, child: Text('data3')),
+                          // ],
                           iconStyleData: IconStyleData(
                             icon: Icon(Icons.keyboard_arrow_down, color: ThemeColors.base400),
                           ),
@@ -818,10 +849,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             lastDate: DateTime.now().add(Duration(days: 20)),
                           );
                           if (date != null) {
-                            dateController.text = date.dateFormat();
+                            dateController.text = date.dateForRequest();
                           }
                         },
                         child: TextFormField(
+                          enabled: false,
                           controller: dateController,
                           decoration: InputDecoration(
                             hintText: 'Выберите дату',
@@ -835,11 +867,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: ThemeColors.baseBlack),
                       ),
                       5.height,
-                      TextFormField(
-                        controller: timeController,
-                        decoration: InputDecoration(
-                          hintText: 'Выберите время',
-                          suffixIcon: Icon(Icons.access_time_outlined, color: ThemeColors.base300, size: 22.r),
+                      GestureDetector(
+                        onTap: () async {
+                          final time = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+                          if (time != null) {
+                            timeController.text = time.format(context);
+                          }
+                        },
+                        child: TextFormField(
+                          enabled: false,
+                          controller: timeController,
+                          decoration: InputDecoration(
+                            hintText: 'Выберите время',
+                            suffixIcon: Icon(Icons.access_time_outlined, color: ThemeColors.base300, size: 22.r),
+                          ),
                         ),
                       ),
                       10.height,
@@ -914,12 +955,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                     color: ThemeColors.base400,
                                   ),
                                 ),
-                                Text(
-                                  'ул. Тарас Шевченко, дом 17',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: ThemeColors.baseBlack,
+                                30.width,
+                                Expanded(
+                                  child: Text(
+                                    selectedClubNotifier.value?.address ?? '',
+                                    maxLines: 2,
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: ThemeColors.baseBlack,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -959,7 +1005,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                 ),
                                 Text(
-                                  '12:20',
+                                  timeController.text,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w400,
@@ -976,13 +1022,21 @@ class _RegisterPageState extends State<RegisterPage> {
                         text:
                             'Не волнуйтесь насчет специальной одежды или подготовки. Просто приходите. У нас уютная студия, где все внимание специалист уделит только вам. До встречи! 😊',
                       ),
+                    ] else if (state is RegisterError) ...[
+                      (1.sh / 3).toInt().height,
+                      Center(
+                        child: Text(
+                          'Что то пошло не так',
+                          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400, color: ThemeColors.base400),
+                        ),
+                      ),
                     ],
                     SizedBox(height: 0.5.sh),
                   ],
                 ),
               ),
-              if (state is! RegisterInitial)
-                Positioned(left: 0, bottom: 0, child: SizedBox(height: 200, child: Image.asset(AppAssets.mila))),
+              // if (state is! RegisterInitial)
+              //   Positioned(left: 0, bottom: 0, child: SizedBox(height: 200, child: Image.asset(AppAssets.mila))),
             ],
           ),
         ),

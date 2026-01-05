@@ -1,18 +1,23 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:io';
+
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:health_club/firebase_options.dart';
 import 'package:health_club/router/app_router.dart';
 import '../../design_system/design_system.dart';
+import 'app_bloc/app_bloc.dart';
 import 'di/init.dart';
 import 'domain/core/alice_factory.dart';
 
 void main() async {
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   configureDependencies();
+  AppBloc.init();
+
   runApp(const MyApp());
 }
+
 // 49bc56a3-1943-4c80-b687-9e92e5859053
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -30,12 +35,13 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         designSize: const Size(375, 812),
         child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
           routerConfig: router.config(),
-          title: 'Flutter Demo',
+          title: '35’ Health Clubs',
           theme: ThemeData(
             scaffoldBackgroundColor: ThemeColors.base100,
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            inputDecorationTheme:  InputDecorationTheme(
+            inputDecorationTheme: InputDecorationTheme(
               alignLabelWithHint: true,
               contentPadding: EdgeInsets.all(18),
               errorBorder: OutlineInputBorder(
@@ -79,25 +85,23 @@ class MyApp extends StatelessWidget {
             aliceFactory.initializeWithNavigator(router.navigatorKey);
             // GetIt.I.get<Alice>().setNavigatorKey(router.navigatorKey);
 
-            return child ?? SizedBox();
-            // return FlavorBanner(
-            //   name: 'Beauty Business',
-            //   show: false,
-            //   child: DraggableAliceButton(
-            //     child: child ?? const SizedBox.shrink(),
-            //     onPressed: () => aliceFactory.alice.isInspectorOpened
-            //         ? aliceFactory.alice.getNavigatorKey()?.currentContext?.maybePop()
-            //         : aliceFactory.alice.showInspector(),
-            //   ),
-            // );
-
+            // return child ?? SizedBox();
+            return FlavorBanner(
+              name: 'Beauty Business',
+              show: false,
+              child: DraggableAliceButton(
+                child: child ?? const SizedBox.shrink(),
+                onPressed: () => aliceFactory.alice.isInspectorOpened
+                    ? aliceFactory.alice.getNavigatorKey()?.currentContext?.maybePop()
+                    : aliceFactory.alice.showInspector(),
+              ),
+            );
           },
         ),
       ),
     );
   }
 }
-
 
 // --- Draggable Alice button widget ---
 class DraggableAliceButton extends StatefulWidget {
@@ -157,33 +161,31 @@ class _DraggableAliceButtonState extends State<DraggableAliceButton> {
   }
 }
 
-
 class FlavorBanner extends StatelessWidget {
   final String name;
   final bool show;
   final Widget? child;
 
-  const FlavorBanner({
-    super.key,
-    required this.name,
-    required this.show,
-    this.child,
-  });
+  const FlavorBanner({super.key, required this.name, required this.show, this.child});
 
   @override
   Widget build(BuildContext context) {
     return show
         ? Banner(
-      location: BannerLocation.topStart,
-      message: name,
-      color: Colors.green.withValues(alpha: 0.6),
-      textStyle: const TextStyle(
-        fontWeight: FontWeight.w700,
-        fontSize: 12.0,
-        letterSpacing: 1.0,
-      ),
-      child: child,
-    )
+            location: BannerLocation.topStart,
+            message: name,
+            color: Colors.green.withValues(alpha: 0.6),
+            textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, letterSpacing: 1.0),
+            child: child,
+          )
         : child!;
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }

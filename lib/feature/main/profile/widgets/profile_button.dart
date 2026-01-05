@@ -5,6 +5,7 @@ class ProfileButton extends StatelessWidget {
   final String title;
   final String icon;
   final VoidCallback onPressed;
+
   const ProfileButton({super.key, required this.title, required this.icon, required this.onPressed});
 
   @override
@@ -23,7 +24,7 @@ class ProfileButton extends StatelessWidget {
                 width: 54.r,
                 padding: EdgeInsets.all(15.r),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.r), color: Color(0xfff5f5f5)),
-                child: SvgPicture.asset(icon),
+                child: SvgPicture.asset(icon, colorFilter: ColorFilter.mode(ThemeColors.baseBlack, BlendMode.srcIn)),
               ),
             ),
             10.width,

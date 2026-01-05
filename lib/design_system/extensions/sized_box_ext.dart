@@ -10,3 +10,13 @@ extension SizeExt on int {
 
   SliverToBoxAdapter get sliveredWidth => SliverToBoxAdapter(child: SizedBox(width: toDouble().r));
 }
+
+extension DoubleSizeExt on double {
+  Widget get height => SizedBox(height: h);
+
+  Widget get width => SizedBox(width: r);
+
+  SliverToBoxAdapter get sliveredHeight => SliverToBoxAdapter(child: SizedBox(height: h));
+
+  SliverToBoxAdapter get sliveredWidth => SliverToBoxAdapter(child: SizedBox(width: r));
+}

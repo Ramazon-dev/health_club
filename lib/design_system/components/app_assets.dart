@@ -54,6 +54,16 @@ class AppAssets {
   static const String upload = 'assets/icons/upload.svg';
   static const String organicFood = 'assets/icons/organic_food.svg';
   static const String noteEdit = 'assets/icons/note_edit.svg';
+  static const String dumbbellDark = 'assets/icons/dumbbell_dark.svg';
+  static const String pharagraph = 'assets/icons/pharagraph.svg';
+  static const String dumbbell = 'assets/icons/dumbbell.svg';
+  static const String weight = 'assets/icons/weight.svg';
+  static const String cancel = 'assets/icons/cancel.svg';
+  static const String done = 'assets/icons/done.svg';
+  static const String droplet = 'assets/icons/droplet.svg';
+  static const String sleeping = 'assets/icons/sleeping.svg';
+  static const String steps = 'assets/icons/steps.svg';
+  static const String question = 'assets/icons/question.svg';
 
   static const String messagePng = 'assets/icons/message.png';
 

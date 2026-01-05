@@ -100,6 +100,16 @@ extension DateFromStringEx on String {
     final now = DateTime.now();
     return DateTime(now.year, now.month, now.day, t.hour, t.minute);
   }
+
+  DateTime? tryParse() {
+    try {
+      final format = DateFormat('dd-MM-yyyy');
+      return format.parse(this);
+    } catch (e) {
+      print('object tryParse error $e');
+      return null;
+    }
+  }
 }
 
 enum DayOfWeek {

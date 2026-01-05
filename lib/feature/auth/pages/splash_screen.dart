@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:health_club/data/storage/app_storage.dart';
+import 'package:health_club/di/init.dart';
 import 'package:health_club/router/app_router.gr.dart';
 
 import '../../../design_system/design_system.dart';
@@ -15,8 +17,15 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    final navigator = context.router;
-    Future.delayed(Duration(seconds: 3), () => navigator.push(OnBoardingRoute()));
+    final router = context.router;
+    getIt<AppStorage>().getAccessToken().then((token) {
+      print('object get access token $token');
+      if (token.isNotEmpty) {
+        router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
+      } else {
+        router.push(OnBoardingRoute());
+      }
+    });
     super.initState();
   }
 

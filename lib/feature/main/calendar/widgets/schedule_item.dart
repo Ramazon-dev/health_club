@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:health_club/domain/core/core.dart';
 
+import '../../../../data/network/model/calendar_response.dart';
 import '../../../../design_system/design_system.dart';
 
 class ScheduleItem extends StatelessWidget {
   final bool isLast;
+  final PastResponse past;
 
-  const ScheduleItem({super.key, this.isLast = false});
+  const ScheduleItem({super.key, this.isLast = false, required this.past});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,7 @@ class ScheduleItem extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Отменено',
+                    past.status ?? '',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 14.sp,
@@ -50,27 +53,27 @@ class ScheduleItem extends StatelessWidget {
             SizedBox(height: 10.h),
           ],
           Text(
-            '14 марта, 18:00 - 19:00',
+            past.datetimeStart?.bookingDate() ?? '',
             style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500, color: ThemeColors.baseBlack),
           ),
           SizedBox(height: 20.h),
           Text(
-            'Силовая тренировка',
+            past.title ?? '',
             style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400, color: ThemeColors.baseBlack),
           ),
           SizedBox(height: 10.h),
           Text(
-            '35’HC — Центральный клуб',
+            past.subtitle ?? '',
             style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400, color: ThemeColors.baseBlack),
           ),
           SizedBox(height: 20.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              PrimaryButton2(onPressed: () {}, text: 'Отменить', size: Size(0.4.sw, 50.h)),
-              PrimaryButton2(onPressed: () {}, text: 'Перенести', size: Size(0.4.sw, 50.h)),
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     PrimaryButton2(onPressed: () {}, text: 'Отменить', size: Size(0.4.sw, 50.h)),
+          //     PrimaryButton2(onPressed: () {}, text: 'Перенести', size: Size(0.4.sw, 50.h)),
+          //   ],
+          // ),
         ],
       ),
     );

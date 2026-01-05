@@ -1,52 +1,69 @@
 part of 'register_cubit.dart';
 
 sealed class RegisterState {
-  const RegisterState();
+  final WizardResponse? wizard;
+  const RegisterState(this.wizard);
 }
 
 class RegisterInitial extends RegisterState {
-  const RegisterInitial();
+  const RegisterInitial(super.wizard);
+}
+
+class RegisterLoading extends RegisterState {
+  const RegisterLoading(super.wizard);
 }
 
 class RegisterName extends RegisterState {
-  const RegisterName();
+  final bool passed;
+  const RegisterName(super.wizard, {this.passed = false});
 }
 
 class RegisterConcerns extends RegisterState {
-  const RegisterConcerns();
+  final bool passed;
+  final List<WizardOptionResponse> options;
+  const RegisterConcerns(super.wizard, {this.passed = false, required this.options});
 }
 
 class RegisterProblems extends RegisterState {
-  const RegisterProblems();
+  final bool passed;
+  final List<WizardOptionResponse> options;
+  const RegisterProblems(super.wizard, {this.passed = false, required this.options});
 }
 
 class RegisterBodyDetails extends RegisterState {
-  const RegisterBodyDetails();
+  final bool passed;
+  const RegisterBodyDetails(super.wizard, {this.passed = false});
 }
 
 class RegisterBodyDetailsResult extends RegisterState {
-  const RegisterBodyDetailsResult();
+  final bool passed;
+  const RegisterBodyDetailsResult(super.wizard, {this.passed = false});
 }
 
 class RegisterTarget extends RegisterState {
-  const RegisterTarget();
+  final bool passed;
+  final List<WizardOptionResponse> options;
+  const RegisterTarget(super.wizard, {this.passed = false, required this.options});
 }
 
 class RegisterAddress extends RegisterState {
-  const RegisterAddress();
+  final bool passed;
+  const RegisterAddress(super.wizard, {this.passed = false});
 }
 
 class RegisterDiagnostics extends RegisterState {
-  const RegisterDiagnostics();
+  final bool passed;
+  final List<ClubResponse> clubs;
+  const RegisterDiagnostics(super.wizard, {this.passed = false, required this.clubs});
 }
 
 class RegisterSuccess extends RegisterState {
-  const RegisterSuccess();
+  const RegisterSuccess(super.wizard);
 }
 
 class RegisterError extends RegisterState {
   final String message;
-  const RegisterError(this.message);
+  const RegisterError(super.wizard, this.message);
 }
 
 

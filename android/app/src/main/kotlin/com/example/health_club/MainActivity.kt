@@ -1,4 +1,4 @@
-package com.example.health_club
+package com.club.a35healthclients
 
 import io.flutter.embedding.android.FlutterActivity
 

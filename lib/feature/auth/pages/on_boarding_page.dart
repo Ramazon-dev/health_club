@@ -58,78 +58,85 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 ),
               ),
             ),
-            SizedBox(height: 35),
+            45.height,
             Text(
-              'Выберите свою страну',
+              'Просто \n Безопасно \nЭффективно',
               textAlign: TextAlign.center,
-              style: TextStyle(color: ThemeColors.baseBlack, fontSize: 18.sp, fontWeight: FontWeight.w500),
+              style: TextStyle(color: ThemeColors.baseBlack, fontSize: 28.sp, fontWeight: FontWeight.w500),
             ),
-            // SizedBox(height: 35),
-            10.height,
 
-            GestureDetector(
-              onTap: () {
-                selectCountryNotifier.value = true;
-              },
-              child: Container(
-                width: 0.5.sw,
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.r),
-                decoration: BoxDecoration(
-                  border: Border.all(color: country ? ThemeColors.primaryColor : Colors.transparent),
-                  borderRadius: BorderRadius.circular(8.r),
-                  color: Color(0x3311d564),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (country)
-                    Icon(Icons.done, color: country ? ThemeColors.primaryColor : Color(0xff11d564), size: 18.r),
-                    SizedBox(width: 5.r),
-                    Text(
-                      'Uzbekistan',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14.sp,
-                        color: country ? ThemeColors.primaryColor : Color(0xff11d564),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            10.height,
-            GestureDetector(
-              onTap: () {
-                selectCountryNotifier.value = false;
-              },
-              child: Container(
-                width: 0.5.sw,
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.r),
-                decoration: BoxDecoration(
-                  border: Border.all(color: !country ? ThemeColors.primaryColor : Colors.transparent),
-                  borderRadius: BorderRadius.circular(8.r),
-                  color: Color(0x3311d564),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (!country)
-                    Icon(Icons.done, color: !country ? ThemeColors.primaryColor : Color(0xff11d564), size: 18.r),
-                    SizedBox(width: 5.r),
-                    Text(
-                      'Kazakxstan',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14.sp,
-                        color: !country ? ThemeColors.primaryColor : Color(0xff11d564),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // SizedBox(height: 35),
+            // Text(
+            //   'Выберите свою страну',
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(color: ThemeColors.baseBlack, fontSize: 18.sp, fontWeight: FontWeight.w500),
+            // ),
+            // // SizedBox(height: 35),
+            // 10.height,
+            //
+            // GestureDetector(
+            //   onTap: () {
+            //     selectCountryNotifier.value = true;
+            //   },
+            //   child: Container(
+            //     width: 0.5.sw,
+            //     padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.r),
+            //     decoration: BoxDecoration(
+            //       border: Border.all(color: country ? ThemeColors.primaryColor : Colors.transparent),
+            //       borderRadius: BorderRadius.circular(8.r),
+            //       color: Color(0x3311d564),
+            //     ),
+            //     child: Row(
+            //       mainAxisSize: MainAxisSize.min,
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         if (country)
+            //         Icon(Icons.done, color: country ? ThemeColors.primaryColor : Color(0xff11d564), size: 18.r),
+            //         SizedBox(width: 5.r),
+            //         Text(
+            //           'Uzbekistan',
+            //           style: TextStyle(
+            //             fontWeight: FontWeight.w400,
+            //             fontSize: 14.sp,
+            //             color: country ? ThemeColors.primaryColor : Color(0xff11d564),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // 10.height,
+            // GestureDetector(
+            //   onTap: () {
+            //     selectCountryNotifier.value = false;
+            //   },
+            //   child: Container(
+            //     width: 0.5.sw,
+            //     padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.r),
+            //     decoration: BoxDecoration(
+            //       border: Border.all(color: !country ? ThemeColors.primaryColor : Colors.transparent),
+            //       borderRadius: BorderRadius.circular(8.r),
+            //       color: Color(0x3311d564),
+            //     ),
+            //     child: Row(
+            //       mainAxisSize: MainAxisSize.min,
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         if (!country)
+            //         Icon(Icons.done, color: !country ? ThemeColors.primaryColor : Color(0xff11d564), size: 18.r),
+            //         SizedBox(width: 5.r),
+            //         Text(
+            //           'Kazakxstan',
+            //           style: TextStyle(
+            //             fontWeight: FontWeight.w400,
+            //             fontSize: 14.sp,
+            //             color: !country ? ThemeColors.primaryColor : Color(0xff11d564),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
             // Container(
             //   width: 1.sw,
             //   margin: EdgeInsets.symmetric(horizontal: 15.r),
@@ -188,33 +195,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(15.r),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ButtonWithScale(
-              // isLoading: isLoading,
-              // onPressed: isEnable
-              //     ? () async {
-              //   loadingNotifier.value = true;
-              // }
-              //     : null,
-              onPressed: () {
-                context.router.push(LoginRoute());
-              },
-              text: 'Войти',
-            ),
-            // SizedBox(height: 5),
-            // ButtonWithScale(
-            //   color: Color(0xfff5f5f5),
-            //   onPressed: () {
-            //     context.router.push(RegisterRoute());
-            //   },
-            //   text: 'Зарегистрироваться',
-            //   textStyle: TextStyle(color: ThemeColors.baseBlack, fontSize: 16, fontWeight: FontWeight.w500),
-            // ),
-          ],
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.r),
+        child: ButtonWithScale(
+          onPressed: () {
+            context.router.push(LoginRoute());
+          },
+          text: 'Войти',
         ),
       ),
     );

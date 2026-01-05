@@ -14,6 +14,7 @@ class ThemeColors {
   static const statusBlue = Color(0xff3189FF);
   static const statusYellow = Color(0xffFFD700);
   static const statusGreen = Color(0xff11D564);
+  static const statusRed = Color(0xffFF3D3D);
   static const rateColor = Color(0xffFFD700);
   static const boxColor = Color(0xffEFEFEF);
   static const boxBorderColor = Color(0xffD8DADC);

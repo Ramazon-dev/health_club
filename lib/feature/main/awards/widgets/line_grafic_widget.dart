@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:health_club/data/network/model/forecast_response.dart';
 import 'package:health_club/design_system/design_system.dart';
 
 class DetailedProgressCard extends StatelessWidget {
-  const DetailedProgressCard({super.key});
+  final ForecastResponse forecast;
+  const DetailedProgressCard({super.key, required this.forecast});
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +33,9 @@ class DetailedProgressCard extends StatelessWidget {
 
           _ProgressRow(
             icon: SvgPicture.asset(AppAssets.calendarMonth),
-            label: 'Ежегодные визиты',
-            current: 128,
-            total: 256,
+            label: 'Процент жира в организме',
+            current: forecast.startTargetBodyFatPercent ?? 0,
+            total: forecast.finalTargetBodyFatPercent ?? 0,
             color: ThemeColors.statusOrange,
           ),
 
@@ -41,9 +43,9 @@ class DetailedProgressCard extends StatelessWidget {
 
           _ProgressRow(
             icon: SvgPicture.asset(AppAssets.calendarMonth),
-            label: 'Ежемесячный визиты',
-            current: 8,
-            total: 12,
+            label: 'Мышечная масса, кг',
+            current: forecast.startTargetMuscleMassKg ?? 0,
+            total: forecast.finalTargetMuscleMassKg ?? 0,
             color: ThemeColors.statusBlue,
           ),
 
@@ -51,9 +53,9 @@ class DetailedProgressCard extends StatelessWidget {
 
           _ProgressRow(
             icon: SvgPicture.asset(AppAssets.calendarMonth),
-            label: 'Еженедельные визиты',
-            current: 2,
-            total: 4,
+            label: 'Общая масса, кг',
+            current: forecast.startTargetTotalWeightKg ?? 0,
+            total: forecast.finalTargetTotalWeightKg ?? 0,
             color: ThemeColors.statusYellow,
           ),
 
@@ -61,9 +63,9 @@ class DetailedProgressCard extends StatelessWidget {
 
           _ProgressRow(
             icon: SvgPicture.asset(AppAssets.achievement),
-            label: 'До следующего звания',
-            current: 70,
-            total: 100,
+            label: 'Порог возврата средств при окончательном обращении, кг',
+            current: forecast.startContractRefundThresholdKg ?? 0,
+            total: forecast.finalContractRefundThresholdKg ?? 0,
             color: ThemeColors.statusGreen,
           ),
         ],
@@ -75,8 +77,8 @@ class DetailedProgressCard extends StatelessWidget {
 class _ProgressRow extends StatelessWidget {
   final Widget icon;
   final String label;
-  final int current;
-  final int total;
+  final num current;
+  final num total;
   final Color color;
 
   const _ProgressRow({

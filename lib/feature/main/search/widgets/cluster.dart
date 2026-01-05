@@ -18,7 +18,7 @@ class ClusterIconPainter {
   /// Метод, который формирует фигуру кластера
   /// и преобразует ее в байтовый формат
   Future<Uint8List> getClusterIconBytes() async {
-    const size = Size(65, 65);
+    const size = Size(160, 160);
     final recorder = PictureRecorder();
 
 
@@ -54,7 +54,7 @@ Canvas _paintCirclePlacemark({
   final canvas = Canvas(recorder);
 
 
-  final radius = size.height / 2.15;
+  final radius = size.height / 2.1;
 
 
   // внутренний круг - закрашенная часть маркера
@@ -93,7 +93,7 @@ void _paintTextCountPlacemarks({
       text: text,
       style: TextStyle(
         color: ThemeColors.baseBlack,
-        fontSize: 24.sp,
+        fontSize: 40.sp,
         fontWeight: FontWeight.w400,
       ),
     ),

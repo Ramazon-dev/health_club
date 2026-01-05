@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:health_club/domain/core/services/google_sign_up_configure.dart';
+import 'package:health_club/app_bloc/app_bloc.dart';
+import 'package:health_club/domain/core/core.dart';
 import 'package:health_club/feature/auth/widgets/count_down_timer.dart';
 import 'package:health_club/router/app_router.gr.dart';
 import 'package:pinput/pinput.dart';
@@ -10,16 +11,14 @@ import '../../../design_system/design_system.dart';
 @RoutePage()
 class PinPutPage extends StatefulWidget {
   final String phoneNumber;
-  final String verificationId;
 
-  const PinPutPage({super.key, required this.phoneNumber, required this.verificationId});
+  const PinPutPage({super.key, required this.phoneNumber});
 
   @override
   State<PinPutPage> createState() => _PinPutPageState();
 }
 
 class _PinPutPageState extends State<PinPutPage> {
-  final loadingNotifier = ValueNotifier<bool>(false);
   final controller = TextEditingController();
   final timerController = ResendTimerController(initialSeconds: 60);
   final enableNotifier = ValueNotifier(false);
@@ -52,7 +51,7 @@ class _PinPutPageState extends State<PinPutPage> {
             ),
             SizedBox(height: 40),
             Pinput(
-              autofocus: true,
+              // autofocus: true,
               controller: controller,
               onChanged: (value) {
                 if (value.length == 4) {
@@ -64,7 +63,9 @@ class _PinPutPageState extends State<PinPutPage> {
 
                 enableNotifier.value = false;
               },
-              onCompleted: (value) {},
+              onCompleted: (value) {
+                context.read<OtpVerifyCubit>().verify(controller.text);
+              },
               length: 4,
               submittedPinTheme: PinTheme(
                 width: 82,
@@ -126,28 +127,38 @@ class _PinPutPageState extends State<PinPutPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Padding(
-        padding: EdgeInsets.all(16),
-        child: ValueListenableBuilder(
-          valueListenable: loadingNotifier,
-          builder: (context, isLoading, child) => ValueListenableBuilder(
+      floatingActionButton: BlocConsumer<OtpVerifyCubit, OtpVerifyState>(
+        listener: (context, state) {
+          if (state is OtpVerifySuccess) {
+            if (state.verifyResult.wizard == true) {
+              context.router.push(RegisterRoute(step: state.verifyResult.step ?? 0));
+            } else {
+              context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
+            }
+          } else if (state is OtpVerifyError) {
+            context.showSnackBar(state.message ?? 'error');
+          }
+        },
+        builder: (context, state) => Padding(
+          padding: EdgeInsets.all(16),
+          child: ValueListenableBuilder(
             valueListenable: enableNotifier,
             builder: (context, isEnable, child) => ButtonWithScale(
-              isLoading: isLoading,
+              isLoading: state is OtpVerifyLoading,
               onPressed: isEnable
                   ? () async {
-                      timerController.stop();
-                      // loadingNotifier.value = true;
+                timerController.stop();
+                // loadingNotifier.value = true;
+                context.read<OtpVerifyCubit>().verify(controller.text);
 
-                      final cred = await GoogleSignUpConfigure.verifyCode(
-                        widget.verificationId,
-                        '111111',
-                      );
-                      print('object cred phone is ${cred?.user?.phoneNumber}');
-                      print('object cred uid is ${cred?.user?.uid}');
-                      context.router.push(RegisterRoute());
-                      // context.router.push(MainWrapper());
-                    }
+                // final cred = await GoogleSignUpConfigure.verifyCode(
+                //   widget.verificationId,
+                //   '111111',
+                // );
+                // print('object cred phone is ${cred?.user?.phoneNumber}');
+                // print('object cred uid is ${cred?.user?.uid}');
+                // context.router.push(MainWrapper());
+              }
                   : null,
               text: 'Подтвердить',
             ),

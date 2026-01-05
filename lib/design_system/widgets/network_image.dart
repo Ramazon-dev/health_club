@@ -18,6 +18,7 @@ class AppNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('object object image is $imageUrl');
     return SizedBox(
       width: width,
       height: height,
@@ -29,12 +30,15 @@ class AppNetworkImage extends StatelessWidget {
           fit: BoxFit.cover,
           placeholder: (context, url) =>
           const Center(child: CircularProgressIndicator.adaptive()),
-          errorWidget: (context, url, error) => ColoredBox(
+          errorWidget: (context, url, error) {
+            print('object errorWidget url $url\n error: $error');
+            return ColoredBox(
             color: Colors.blueGrey.shade100,
             child: const Center(
               child: Icon(Icons.error, color: Colors.red),
             ),
-          ),
+          );
+          },
         ),
       ),
     );

@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:health_club/app_bloc/app_bloc.dart';
 import 'package:health_club/design_system/design_system.dart';
-import 'package:health_club/router/app_router.gr.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 @RoutePage()
@@ -23,6 +23,10 @@ class _QrCodeScannerPageState extends State<QrCodeScannerPage> {
     super.dispose();
   }
 
+  Future<void> checkQr(String code) async {
+    await context.read<CheckQrCubit>().checkQrCode(code);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +36,14 @@ class _QrCodeScannerPageState extends State<QrCodeScannerPage> {
           Positioned.fill(
             child: MobileScanner(
               controller: controller,
-              onDetect: (barcodes) {
+              onDetect: (barcodes) async {
                 print('object barcode ${barcodes.barcodes.first.displayValue}');
+                final code = barcodes.barcodes.first.displayValue;
+                if (code != null) {
+                  controller.stop();
+                  context.router.maybePop();
+                  await checkQr(code);
+                }
               },
             ),
           ),
@@ -41,7 +51,7 @@ class _QrCodeScannerPageState extends State<QrCodeScannerPage> {
             bottom: 90.h,
             child: GestureDetector(
               onTap: () {
-                context.router.popAndPush(RatingRoute());
+                // context.router.popAndPush(RatingRoute());
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16.r),

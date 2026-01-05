@@ -7,7 +7,7 @@ import '../../../design_system/widgets/button_widgets.dart';
 extension SnacBarExt on BuildContext {
   showSnackBar(
     String message, {
-    int duration = 1,
+    int duration = 3,
     Color? backgroundColor,
   }) {
     return ScaffoldMessenger.of(this).showSnackBar(
