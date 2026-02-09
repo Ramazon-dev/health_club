@@ -73,22 +73,22 @@ abstract class BaseProvider {
             },
           );
         case DioExceptionType.badResponse:
-          final data = e.response?.data['detail'];
+          final data = e.response?.data['message'];
           if (data == 'Invalid token') {
             print('object bad e.response?.data["detail"] into if ');
             // final cubit = GetIt.I.get<UserRegisteredCubit>();
             // cubit.removeAuthentication();
           }
-          print('object base provider bad response ${e.response?.data['detail']}');
+          print('object base provider bad response ${e.response?.data['message']}');
           return ApiResponse<T>(
             null,
-            message: e.response?.data['detail'],
+            message: e.response?.data['message'].toString(),
           );
         case DioExceptionType.unknown:
-          final errorData = e.response?.data;
+          final errorData = e.response?.data['message'];
           if (errorData != null) {
             try {
-              final errorResponse = ApiResponse(null, message: e.response?.data['detail']);
+              final errorResponse = ApiResponse(null, message: e.response?.data['message'].toString());
 
               return ApiResponse<T>(
                 errorResponse.data,
@@ -97,7 +97,7 @@ abstract class BaseProvider {
             } catch (ee) {
               return ApiResponse(
                 null,
-                message: ['Error ${e.response?.data}'],
+                message: ['Error ${e.response?.data['message']}'],
               );
             }
           }

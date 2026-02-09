@@ -37,4 +37,8 @@ class WizardOptionResponse {
   factory WizardOptionResponse.fromJson(Map<String, dynamic> json) {
     return WizardOptionResponse(text: json["text"], answer: json["answer"], selected: json["selected"]);
   }
+
+  WizardOptionResponse copyWith({bool? selected}) {
+    return WizardOptionResponse(text: text, answer: answer, selected: selected ?? this.selected);
+  }
 }

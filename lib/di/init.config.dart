@@ -17,6 +17,7 @@ import '../app_bloc/app_bloc.dart' as _i490;
 import '../data/network/provider/auth_provider.dart' as _i552;
 import '../data/network/provider/main_provider.dart' as _i903;
 import '../data/storage/app_storage.dart' as _i251;
+import '../data/storage/local_storage.dart' as _i755;
 import '../domain/core/core.dart' as _i772;
 import '../router/app_router.dart' as _i81;
 import 'module.dart' as _i946;
@@ -29,13 +30,16 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final module = _$Module();
+    gh.factory<_i490.UserLocationCubit>(
+      () => module.provideUserLocationCubit(),
+    );
     gh.lazySingleton<_i81.AppRouter>(() => module.provideAppRouter());
     gh.lazySingleton<_i251.AppStorage>(() => module.provideAppStorage());
     gh.lazySingleton<_i772.NetworkWatcher>(
-      () => module.provideNetworkWatcher(),
+      () => module.provideNetworkWatcher(gh<_i755.LocalStorage>()),
     );
     gh.lazySingleton<_i361.Dio>(
-      () => module.providePublicDio(),
+      () => module.providePublicDio(gh<_i755.LocalStorage>()),
       instanceName: 'public',
     );
     gh.lazySingleton<_i772.TokenService>(
@@ -48,6 +52,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => module.publicDio(
         gh<_i772.TokenService>(),
         gh<_i772.NetworkWatcher>(),
+        gh<_i755.LocalStorage>(),
       ),
     );
     gh.lazySingleton<_i552.AuthProvider>(
@@ -95,17 +100,42 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i490.ForecastCubit>(
       () => module.provideForecastCubit(gh<_i903.MainProvider>()),
     );
-    gh.factory<_i490.MapPointsCubit>(
-      () => module.provideMapPointsCubit(gh<_i903.MainProvider>()),
-    );
     gh.factory<_i490.MapPointDetailCubit>(
       () => module.provideMapPointDetailCubit(gh<_i903.MainProvider>()),
     );
     gh.factory<_i490.CheckQrCubit>(
       () => module.provideCheckQrCubit(gh<_i903.MainProvider>()),
     );
+    gh.factory<_i490.UserMeCubit>(
+      () => module.provideUserMeCubit(gh<_i903.MainProvider>()),
+    );
+    gh.factory<_i490.ChangePasswordCubit>(
+      () => module.provideChangePasswordCubit(gh<_i903.MainProvider>()),
+    );
+    gh.factory<_i490.FirstTrainingsCubit>(
+      () => module.provideFirstTrainingsCubit(gh<_i903.MainProvider>()),
+    );
+    gh.factory<_i490.SlotsCubit>(
+      () => module.provideSlotsCubit(gh<_i903.MainProvider>()),
+    );
+    gh.factory<_i490.PartnersCubit>(
+      () => module.providePartnersCubit(gh<_i903.MainProvider>()),
+    );
+    gh.factory<_i490.BookSlotCubit>(
+      () => module.provideBookSlotCubit(gh<_i903.MainProvider>()),
+    );
     gh.factory<_i490.ProfileCubit>(
-      () => module.provideProfileCubit(gh<_i903.MainProvider>()),
+      () => module.provideProfileCubit(
+        gh<_i903.MainProvider>(),
+        gh<_i755.LocalStorage>(),
+      ),
+    );
+    gh.factory<_i490.LoginCubit>(
+      () => module.provideLoginCubit(
+        gh<_i552.AuthProvider>(),
+        gh<_i251.AppStorage>(),
+        gh<_i755.LocalStorage>(),
+      ),
     );
     gh.factory<_i490.OtpVerifyCubit>(
       () => module.provideOtpVerifyCubit(
@@ -116,11 +146,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i490.RegisterCubit>(
       () => module.provideRegisterCubit(gh<_i552.AuthProvider>()),
     );
-    gh.factory<_i490.LoginCubit>(
-      () => module.provideLoginCubit(gh<_i552.AuthProvider>()),
+    gh.factory<_i490.WizardSlotsCubit>(
+      () => module.provideWizardSlotsCubit(gh<_i552.AuthProvider>()),
+    );
+    gh.factory<_i490.WizardClubsCubit>(
+      () => module.provideWizardClubsCubit(gh<_i552.AuthProvider>()),
+    );
+    gh.factory<_i490.RegisterFirstVisitCubit>(
+      () => module.provideRegisterFirstVisitCubit(gh<_i552.AuthProvider>()),
     );
     gh.factory<_i490.UserDetailsCubit>(
       () => module.provideUserDetailsCubit(gh<_i552.AuthProvider>()),
+    );
+    gh.factory<_i490.TargetCubit>(
+      () => module.provideTargetCubit(gh<_i552.AuthProvider>()),
+    );
+    gh.factoryParam<_i490.MapPointsCubit, _i490.UserLocationCubit, dynamic>(
+      (userLocationCubit, _) => module.provideMapPointsCubit(
+        gh<_i903.MainProvider>(),
+        userLocationCubit,
+      ),
     );
     return this;
   }

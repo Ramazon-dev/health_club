@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:health_club/data/network/provider/auth_provider_impl.dart';
+import 'package:health_club/data/storage/local_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -27,8 +28,8 @@ abstract class Module {
 
   @lazySingleton
   @Named('public')
-  Dio providePublicDio() {
-    final baseOptions = BaseOptions(baseUrl: Endpoints.baseUrl);
+  Dio providePublicDio(LocalStorage localStorage) {
+    final baseOptions = BaseOptions(baseUrl: localStorage.getBaseUrl());
     final dio = Dio(baseOptions);
 
     dio.interceptors.addAll([
@@ -40,17 +41,17 @@ abstract class Module {
   }
 
   @lazySingleton
-  Dio publicDio(TokenService tokenService, NetworkWatcher watcher) {
-    final baseOptions = BaseOptions(baseUrl: Endpoints.baseUrl);
+  Dio publicDio(TokenService tokenService, NetworkWatcher watcher, LocalStorage localStorage) {
+    final baseOptions = BaseOptions(baseUrl: localStorage.getBaseUrl());
     final dio = Dio(baseOptions);
 
     dio.interceptors.addAll([
       RetryInterceptor(
         dio: dio,
         watcher: watcher,
-        logPrint: () => debugPrint('Network error occurred'),
+        logPrint: () => print('Network error occurred'),
         toNoInternetPageNavigator: () async {
-          debugPrint('No internet connection');
+          print('No internet connection');
           // final router = getIt<AppRouter>();
           // if (router.current.name != NoInternetRoute.name) {
           //   router.push(NoInternetRoute());
@@ -74,8 +75,8 @@ abstract class Module {
   }
 
   @lazySingleton
-  NetworkWatcher provideNetworkWatcher() {
-    final dio = Dio(BaseOptions(baseUrl: Endpoints.baseUrl, connectTimeout: const Duration(seconds: 3)));
+  NetworkWatcher provideNetworkWatcher(LocalStorage localStorage) {
+    final dio = Dio(BaseOptions(baseUrl: localStorage.getBaseUrl(), connectTimeout: const Duration(seconds: 3)));
     final w = NetworkWatcher(dio, Endpoints.faq);
     w.init();
     return w;
@@ -87,9 +88,24 @@ abstract class Module {
   @lazySingleton
   MainProvider provideMainProvider(Dio dio) => MainProviderImpl(dio);
 
+  // @lazySingleton
+  // Future<LocalStorage> provideLocalStorage() async {
+  //   Hive.init((await getApplicationDocumentsDirectory()).path);
+  //   final rawBox = await Hive.openBox('AppBox');
+  //   return LocalStorage(rawBox);
+  // }
+
   RegisterCubit provideRegisterCubit(AuthProvider authProvider) => RegisterCubit(authProvider);
 
-  LoginCubit provideLoginCubit(AuthProvider authProvider) => LoginCubit(authProvider);
+  WizardSlotsCubit provideWizardSlotsCubit(AuthProvider authProvider) => WizardSlotsCubit(authProvider);
+
+  WizardClubsCubit provideWizardClubsCubit(AuthProvider authProvider) => WizardClubsCubit(authProvider);
+
+  RegisterFirstVisitCubit provideRegisterFirstVisitCubit(AuthProvider authProvider) =>
+      RegisterFirstVisitCubit(authProvider);
+
+  LoginCubit provideLoginCubit(AuthProvider authProvider, AppStorage storage, LocalStorage localStorage) =>
+      LoginCubit(authProvider, storage, localStorage);
 
   OtpVerifyCubit provideOtpVerifyCubit(AuthProvider authProvider, AppStorage storage) =>
       OtpVerifyCubit(authProvider, storage);
@@ -122,13 +138,31 @@ abstract class Module {
 
   ForecastCubit provideForecastCubit(MainProvider mainProvider) => ForecastCubit(mainProvider);
 
-  MapPointsCubit provideMapPointsCubit(MainProvider mainProvider) => MapPointsCubit(mainProvider);
+  MapPointsCubit provideMapPointsCubit(MainProvider mainProvider, @factoryParam UserLocationCubit userLocationCubit) =>
+      MapPointsCubit(mainProvider, userLocationCubit);
 
   MapPointDetailCubit provideMapPointDetailCubit(MainProvider mainProvider) => MapPointDetailCubit(mainProvider);
+
+  UserLocationCubit provideUserLocationCubit() => UserLocationCubit();
 
   CheckQrCubit provideCheckQrCubit(MainProvider mainProvider) => CheckQrCubit(mainProvider);
 
   UserDetailsCubit provideUserDetailsCubit(AuthProvider authProvider) => UserDetailsCubit(authProvider);
 
-  ProfileCubit provideProfileCubit(MainProvider mainProvider) => ProfileCubit(mainProvider);
+  ProfileCubit provideProfileCubit(MainProvider mainProvider, LocalStorage localStorage) =>
+      ProfileCubit(mainProvider, localStorage);
+
+  UserMeCubit provideUserMeCubit(MainProvider mainProvider) => UserMeCubit(mainProvider);
+
+  ChangePasswordCubit provideChangePasswordCubit(MainProvider mainProvider) => ChangePasswordCubit(mainProvider);
+
+  FirstTrainingsCubit provideFirstTrainingsCubit(MainProvider mainProvider) => FirstTrainingsCubit(mainProvider);
+
+  TargetCubit provideTargetCubit(AuthProvider authProvider) => TargetCubit(authProvider);
+
+  SlotsCubit provideSlotsCubit(MainProvider mainProvider) => SlotsCubit(mainProvider);
+
+  PartnersCubit providePartnersCubit(MainProvider mainProvider) => PartnersCubit(mainProvider);
+
+  BookSlotCubit provideBookSlotCubit(MainProvider mainProvider) => BookSlotCubit(mainProvider);
 }

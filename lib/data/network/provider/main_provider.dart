@@ -12,16 +12,26 @@ import 'package:health_club/data/network/model/map/map_detail_response.dart';
 import 'package:health_club/data/network/model/map/map_point_response.dart';
 import 'package:health_club/data/network/model/nutrition_diary_response.dart';
 import 'package:health_club/data/network/model/profile_response.dart';
+import 'package:health_club/data/network/model/user_response.dart';
 
 import '../../../domain/core/core.dart';
+import '../model/check_qr_response.dart';
+import '../model/first_training_response.dart';
 import '../model/history/freeze_history_response.dart';
 import '../model/history/training_history_response.dart';
 import '../model/profile_request.dart';
+import '../model/slot_response.dart';
 
 abstract class MainProvider extends BaseProvider {
   Future<ApiResponse<ProfileResponse>> getProfile();
 
+  Future<ApiResponse<UserMeResponse>> getUser();
+
   Future<ApiResponse<bool>> updateProfile(ProfileRequest profileRequest, File? avatar);
+
+  Future<ApiResponse<bool>> changePassword(String password, String confirmationPassword);
+
+  Future<ApiResponse<List<FirstTrainingResponse>>> getPlanedFirstTrainings();
 
   Future<ApiResponse<List<PaymentHistoryResponse>>> getPaymentHistory();
 
@@ -39,15 +49,26 @@ abstract class MainProvider extends BaseProvider {
 
   Future<ApiResponse<DailyMetricsResponse>> getDailyMetrics();
 
-  Future<ApiResponse<bool>> updateMetrics({int? water, double? sleepHours, int? steps});
+  Future<ApiResponse<bool>> updateMetrics({
+    int? water,
+    double? sleepHours,
+    String? sleepStart,
+    String? sleepEnd,
+    int? steps,
+  });
 
   Future<ApiResponse<DashboardMetricsResponse>> getDashboardMetrics();
 
-  Future<ApiResponse<List<MetricHistoryResponse>>> getMetricsHistory();
+  Future<ApiResponse<List<MetricHistoryResponse>>> getMetricsHistory(String type);
 
   Future<ApiResponse<NutritionDiaryResponse>> getNutritionDay();
 
-  Future<ApiResponse<bool>> uploadNutrition({required File image, required String type});
+  Future<ApiResponse<bool>> uploadNutrition({
+    required File image,
+    required String type,
+    required String title,
+    required String text,
+  });
 
   Future<ApiResponse<bool>> getNutritionAnalyze();
 
@@ -55,11 +76,17 @@ abstract class MainProvider extends BaseProvider {
 
   Future<ApiResponse<List<MapPointResponse>>> getMapPoints();
 
+  Future<ApiResponse<List<SlotResponse>>> getSlots(int id, int day);
+
+  Future<ApiResponse<bool>> bookSlot(int reservationId);
+
+  Future<ApiResponse<bool>> cancelBook(int clientReservationId);
+
   Future<ApiResponse<MapDetailResponse>> getMapDetail(String type, int id);
 
   Future<ApiResponse<ForecastResponse>> getForecast();
 
-  Future<ApiResponse<dynamic>> checkQr(String code);
+  Future<ApiResponse<CheckQrResponse>> checkQr(String code);
 
   Future<Uint8List?> downloadImage(String url);
 }

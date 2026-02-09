@@ -20,6 +20,12 @@ class MapDetailDataResponse {
     required this.type,
     required this.title,
     required this.address,
+    required this.lat,
+    required this.long,
+    required this.distance,
+    required this.avatar,
+    required this.imageUrl,
+    required this.isOpen,
     required this.rating,
     required this.reviewsCount,
     required this.description,
@@ -36,6 +42,12 @@ class MapDetailDataResponse {
   final String? type;
   final String? title;
   final String? address;
+  final String? lat;
+  final String? long;
+  final double? distance;
+  final String? avatar;
+  final String? imageUrl;
+  final bool? isOpen;
   final double? rating;
   final int? reviewsCount;
   final String? description;
@@ -44,25 +56,28 @@ class MapDetailDataResponse {
   final List<String> gallery;
   final List<TrainerResponse> trainers;
   final List<ServiceResponse> services;
-  final List<dynamic> reviews;
+  final List<ReviewResponse> reviews;
   final List<OtherBranchResponse> otherBranches;
 
   factory MapDetailDataResponse.fromJson(Map<String, dynamic> json) {
-    print('object json["other_branches"] ${json["other_branches"]}');
     return MapDetailDataResponse(
       id: json["id"],
       type: json["type"],
       title: json["title"],
       address: json["address"],
+      lat: json["lat"],
+      long: json["long"],
+      distance: json["distance"],
+      avatar: json["avatar"],
+      imageUrl: json["image_url"],
+      isOpen: json["is_open"],
       rating: json["rating"],
       reviewsCount: json["reviews_count"],
       description: json["description"],
       contacts: json["contacts"] == null ? null : ContactsResponse.fromJson(json["contacts"]),
       workHours: json["work_hours"] == null
           ? []
-          : (json["work_hours"] is Map<String, dynamic>)
-          ? List<WorkingHourResponse>.from(json["work_hours"]!.map((x) => WorkingHourResponse.fromJson(x)))
-          : [],
+          : List<WorkingHourResponse>.from(json["work_hours"]!.map((x) => WorkingHourResponse.fromJson(x))),
       gallery: json["gallery"] == null ? [] : List<String>.from(json["gallery"]!.map((x) => x)),
       trainers: json["trainers"] == null
           ? []
@@ -70,10 +85,37 @@ class MapDetailDataResponse {
       services: json["services"] == null
           ? []
           : List<ServiceResponse>.from(json["services"]!.map((x) => ServiceResponse.fromJson(x))),
-      reviews: json["reviews"] == null ? [] : List<dynamic>.from(json["reviews"]!.map((x) => x)),
+      reviews: json["reviews"] == null
+          ? []
+          : List<ReviewResponse>.from(json["reviews"]!.map((x) => ServiceResponse.fromJson(x))),
       otherBranches: json["other_branches"] == null
           ? []
           : List<OtherBranchResponse>.from(json["other_branches"]!.map((x) => OtherBranchResponse.fromJson(x))),
+    );
+  }
+
+  MapDetailDataResponse copyWith({double? distance, List<OtherBranchResponse>? otherBranches}) {
+    return MapDetailDataResponse(
+      id: id,
+      type: type,
+      title: title,
+      address: address,
+      lat: lat,
+      long: long,
+      distance: distance ?? this.distance,
+      avatar: avatar,
+      imageUrl: imageUrl,
+      isOpen: isOpen,
+      rating: rating,
+      reviewsCount: reviewsCount,
+      description: description,
+      contacts: contacts,
+      workHours: workHours,
+      gallery: gallery,
+      trainers: trainers,
+      services: services,
+      reviews: reviews,
+      otherBranches: otherBranches ?? this.otherBranches,
     );
   }
 }
@@ -150,6 +192,10 @@ class OtherBranchResponse {
     required this.partnerType,
     required this.title,
     required this.address,
+    required this.lat,
+    required this.long,
+    required this.distance,
+    required this.avatar,
     required this.rating,
     required this.reviewsCount,
     required this.isOpen,
@@ -160,6 +206,10 @@ class OtherBranchResponse {
   final String? partnerType;
   final String? title;
   final String? address;
+  final String? lat;
+  final String? long;
+  final double? distance;
+  final String? avatar;
   final double? rating;
   final int? reviewsCount;
   final bool? isOpen;
@@ -171,9 +221,56 @@ class OtherBranchResponse {
       partnerType: json["partner_type"],
       title: json["title"],
       address: json["address"],
+      lat: json["lat"],
+      long: json["long"],
+      distance: json["distance"],
+      avatar: json["avatar"],
       rating: json["rating"],
       reviewsCount: json["reviews_count"],
       isOpen: json["is_open"],
+    );
+  }
+
+  OtherBranchResponse copyWith({double? distance}) {
+    return OtherBranchResponse(
+      id: id,
+      type: type,
+      partnerType: partnerType,
+      title: title,
+      address: address,
+      lat: lat,
+      long: long,
+      distance: distance ?? this.distance,
+      avatar: avatar,
+      rating: rating,
+      reviewsCount: reviewsCount,
+      isOpen: isOpen,
+    );
+  }
+}
+
+class ReviewResponse {
+  ReviewResponse({
+    required this.id,
+    required this.userName,
+    required this.rating,
+    required this.comment,
+    required this.date,
+  });
+
+  final int? id;
+  final String? userName;
+  final num? rating;
+  final String? comment;
+  final String? date;
+
+  factory ReviewResponse.fromJson(Map<String, dynamic> json) {
+    return ReviewResponse(
+      id: json["id"],
+      userName: json["user_name"],
+      rating: json["rating"],
+      comment: json["comment"],
+      date: json["date"],
     );
   }
 }

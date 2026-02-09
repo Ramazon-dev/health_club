@@ -9,7 +9,7 @@ extension SneakBarStatusExtension on SneakBarStatus {
   Color get backgroundColor {
     switch (this) {
       case SneakBarStatus.success:
-        return Colors.green;
+        return ThemeColors.primaryColor;
       case SneakBarStatus.error:
         return Colors.red;
       case SneakBarStatus.warning:
@@ -24,13 +24,18 @@ extension SneakBarStatusExtension on SneakBarStatus {
       case SneakBarStatus.error:
         return AppAssets.cancel;
       case SneakBarStatus.warning:
-        return AppAssets.done;
+        return AppAssets.warning;
     }
   }
 }
 
 class CustomSneakBar {
-  static Future<void> show({required BuildContext context, required SneakBarStatus status, required String title}) {
+  static Future<void> show({
+    required BuildContext context,
+    required SneakBarStatus status,
+    required String title,
+    int? maxLines,
+  }) {
     return showFlash(
       context: context,
       duration: const Duration(seconds: 3),
@@ -74,7 +79,7 @@ class CustomSneakBar {
                         status.icon,
                         width: 24.r,
                         height: 24.r,
-                        colorFilter: ColorFilter.mode(ThemeColors.primaryColor, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(status.backgroundColor, BlendMode.srcIn),
                       ),
                     ),
                     SizedBox(width: 12),
@@ -82,7 +87,7 @@ class CustomSneakBar {
                       child: Text(
                         title,
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: ThemeColors.baseBlack),
-                        maxLines: 2,
+                        maxLines: maxLines ?? 2,
                       ),
                     ),
                   ],

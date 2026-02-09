@@ -4,6 +4,7 @@ import 'package:health_club/design_system/design_system.dart';
 
 class DetailedProgressCard extends StatelessWidget {
   final ForecastResponse forecast;
+
   const DetailedProgressCard({super.key, required this.forecast});
 
   @override
@@ -33,19 +34,20 @@ class DetailedProgressCard extends StatelessWidget {
 
           _ProgressRow(
             icon: SvgPicture.asset(AppAssets.calendarMonth),
-            label: 'Процент жира в организме',
-            current: forecast.startTargetBodyFatPercent ?? 0,
-            total: forecast.finalTargetBodyFatPercent ?? 0,
+            label: 'Процент жира',
+            current: forecast.current?.fatPercent ?? 0,
+            start: forecast.start?.fatPercent ?? 0,
+            total: forecast.target?.targetBodyFatPercent ?? 0,
             color: ThemeColors.statusOrange,
           ),
-
           20.height,
 
           _ProgressRow(
             icon: SvgPicture.asset(AppAssets.calendarMonth),
-            label: 'Мышечная масса, кг',
-            current: forecast.startTargetMuscleMassKg ?? 0,
-            total: forecast.finalTargetMuscleMassKg ?? 0,
+            label: 'Мышечная масса',
+            current: forecast.current?.muscleMassKg ?? 0,
+            start: forecast.start?.muscleMassKg ?? 0,
+            total: forecast.target?.targetMuscleMassKg ?? 0,
             color: ThemeColors.statusBlue,
           ),
 
@@ -53,21 +55,21 @@ class DetailedProgressCard extends StatelessWidget {
 
           _ProgressRow(
             icon: SvgPicture.asset(AppAssets.calendarMonth),
-            label: 'Общая масса, кг',
-            current: forecast.startTargetTotalWeightKg ?? 0,
-            total: forecast.finalTargetTotalWeightKg ?? 0,
+            label: 'Общая масса',
+            current: forecast.current?.weightKg ?? 0,
+            start: forecast.start?.weightKg ?? 0,
+            total: forecast.target?.targetTotalWeightKg ?? 0,
             color: ThemeColors.statusYellow,
           ),
-
           20.height,
 
-          _ProgressRow(
-            icon: SvgPicture.asset(AppAssets.achievement),
-            label: 'Порог возврата средств при окончательном обращении, кг',
-            current: forecast.startContractRefundThresholdKg ?? 0,
-            total: forecast.finalContractRefundThresholdKg ?? 0,
-            color: ThemeColors.statusGreen,
-          ),
+          // _ProgressRow(
+          //   icon: SvgPicture.asset(AppAssets.achievement),
+          //   label: 'Порог возврата средств при окончательном обращении, кг',
+          //   current: forecast.startContractRefundThresholdKg ?? 0,
+          //   total: forecast.finalContractRefundThresholdKg ?? 0,
+          //   color: ThemeColors.statusGreen,
+          // ),
         ],
       ),
     );
@@ -77,6 +79,7 @@ class DetailedProgressCard extends StatelessWidget {
 class _ProgressRow extends StatelessWidget {
   final Widget icon;
   final String label;
+  final num start;
   final num current;
   final num total;
   final Color color;
@@ -84,6 +87,7 @@ class _ProgressRow extends StatelessWidget {
   const _ProgressRow({
     required this.icon,
     required this.label,
+    required this.start,
     required this.current,
     required this.total,
     required this.color,
@@ -102,11 +106,11 @@ class _ProgressRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('$label: $current/$total',
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: ThemeColors.base400),
+              Text(
+                '$label: $current',
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: ThemeColors.base400),
               ),
               6.height,
-
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Stack(
@@ -118,6 +122,20 @@ class _ProgressRow extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              6.height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Начало: $start',
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: ThemeColors.baseBlack),
+                  ),
+                  Text(
+                    'Цель: $total',
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: ThemeColors.baseBlack),
+                  ),
+                ],
               ),
             ],
           ),

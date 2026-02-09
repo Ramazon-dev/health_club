@@ -6,7 +6,7 @@ import '../model/auth/wizard_options_response.dart';
 import '../model/auth/wizard_response.dart';
 
 abstract class AuthProvider extends BaseProvider {
-  Future<ApiResponse<LoginResponse>> login(String phone);
+  Future<ApiResponse<LoginResponse>> login(String phone, String? password);
 
   Future<ApiResponse<VerifyResponse>> verify(String code);
 
@@ -19,6 +19,10 @@ abstract class AuthProvider extends BaseProvider {
   Future<ApiResponse<ClubsResponse>> wizardClubs();
 
   Future<ApiResponse<bool>> wizardSkip();
+
+  Future<ApiResponse<List<String>>> wizardSlots(int placeId, String day);
+
+  Future<ApiResponse<num?>> getBmi();
 
   // Future<ApiResponse<bool>> wizardPushStep(int step, String text);
   //

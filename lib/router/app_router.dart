@@ -17,7 +17,6 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: LoginRoute.page),
         AutoRoute(page: PinPutRoute.page),
         AutoRoute(page: RegisterRoute.page),
-        AutoRoute(page: GenderRoute.page),
       ],
     ),
     AutoRoute(
@@ -34,6 +33,7 @@ class AppRouter extends RootStackRouter {
             AutoRoute(page: CalendarRoute.page),
           ],
         ),
+        AutoRoute(page: RegisterRoute.page),
         AutoRoute(page: EditProfileRoute.page),
         AutoRoute(page: FreezeHistoryRoute.page),
         AutoRoute(page: PaymentHistoryRoute.page),
@@ -52,6 +52,11 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: DailyReportRoute.page),
         AutoRoute(page: DailyReportResultRoute.page),
         AutoRoute(page: SettingsRoute.page),
+        AutoRoute(page: ProcessInMonthRoute.page),
+        AutoRoute(page: AwardsHistoryRoute.page),
+        AutoRoute(page: ChangePasswordRoute.page),
+        AutoRoute(page: PublicOfferRoute.page),
+        AutoRoute(page: PrivacyPolicyRoute.page),
       ],
     ),
   ];

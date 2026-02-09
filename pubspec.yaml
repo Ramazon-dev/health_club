@@ -43,6 +43,15 @@ dependencies:
   image_picker: ^1.2.1
   url_launcher: ^6.3.2
   flash: ^3.1.1
+  table_calendar: ^3.2.0
+  fl_chart: 1.0.0
+  syncfusion_flutter_charts: ^31.1.19
+  geolocator: ^14.0.2
+  hive_ce: ^2.18.0
+  path_provider: ^2.1.5
+  time_range_picker: ^2.3.1
+  activity_ring: ^0.3.0
+  flutter_image_compress: ^2.4.0
 
 dev_dependencies:
   flutter_test:

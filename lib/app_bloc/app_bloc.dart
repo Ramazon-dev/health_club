@@ -4,6 +4,7 @@ import 'bloc_observer.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'auth/register/register_cubit.dart';
+export 'auth/register/wizard_slots_cubit.dart';
 export 'auth/login/login_cubit.dart';
 export 'auth/otp_verify/otp_verify_cubit.dart';
 export 'bloc_observer.dart';
@@ -18,14 +19,24 @@ export 'metrics/dashboard_metrics/dashboard_metrics_cubit.dart';
 export 'metrics/metrics_history/metrics_history_cubit.dart';
 export 'map/map_points_cubit.dart';
 export 'map/map_point_detail_cubit.dart';
+export 'map/user_location_cubit.dart';
 export 'nutritions/nutrition_analyze/nutrition_analyze_cubit.dart';
 export 'nutritions/nutrition_history/nutrition_history_cubit.dart';
 export 'nutritions/nutrition_day/nutrition_day_cubit.dart';
+export 'profile/change_password_cubit.dart';
 export 'profile/profile_cubit.dart';
+export 'profile/target_cubit.dart';
+export 'profile/register_first_visit_cubit.dart';
+export 'profile/user_me_cubit.dart';
+export 'first_trainings/first_trainings_cubit.dart';
 export 'profile/user_details_cubit.dart';
 export 'calendar/calendar_cubit.dart';
 export 'check_qr/check_qr_cubit.dart';
 export 'forecast/forecast_cubit.dart';
+export 'slots/slots_cubit.dart';
+export 'slots/book_slot_cubit.dart';
+export 'clubs/wizard_clubs_cubit.dart';
+export 'partners/partners_cubit.dart';
 
 class AppBloc {
   AppBloc._();

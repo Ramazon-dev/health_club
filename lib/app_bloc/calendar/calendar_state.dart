@@ -13,8 +13,11 @@ final class CalendarLoading extends CalendarState {
 }
 
 final class CalendarLoaded extends CalendarState {
-  final CalendarResponse calendarResponse;
-  const CalendarLoaded(this.calendarResponse);
+  final List<PastResponse> past;
+  final List<PastResponse> upcoming;
+  final DateTime? selectedDate;
+  // final CalendarResponse calendarResponse;
+  const CalendarLoaded({required this.past, required this.upcoming, this.selectedDate});
 }
 
 final class CalendarError extends CalendarState {

@@ -13,8 +13,10 @@ final class MetricsHistoryLoading extends MetricsHistoryState {
 }
 
 final class MetricsHistoryLoaded extends MetricsHistoryState {
-  final List<MetricHistoryResponse> metricsHistory;
-  const MetricsHistoryLoaded(this.metricsHistory);
+  final List<MetricHistoryResponse> water;
+  final List<MetricHistoryResponse> sleep;
+  final List<MetricHistoryResponse> steps;
+  const MetricsHistoryLoaded({required this.water, required this.sleep, required this.steps});
 }
 
 final class MetricsHistoryError extends MetricsHistoryState {

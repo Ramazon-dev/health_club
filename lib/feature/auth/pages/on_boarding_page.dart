@@ -1,5 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:health_club/data/network/model/user_country_enum.dart';
+import 'package:health_club/data/storage/local_storage.dart';
+import 'package:health_club/di/init.dart';
 import 'package:health_club/router/app_router.gr.dart';
 
 import '../../../design_system/design_system.dart';
@@ -14,6 +18,15 @@ class OnBoardingPage extends StatefulWidget {
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   final ValueNotifier<bool> selectCountryNotifier = ValueNotifier(true);
+  final localStorage = getIt<LocalStorage>();
+
+  @override
+  void initState() {
+    if (localStorage.getCountry() != AppCountryEnum.uz.name) {
+      selectCountryNotifier.value = false;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,140 +71,89 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 ),
               ),
             ),
-            45.height,
-            Text(
-              'Просто \n Безопасно \nЭффективно',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: ThemeColors.baseBlack, fontSize: 28.sp, fontWeight: FontWeight.w500),
-            ),
 
-            // SizedBox(height: 35),
+            // 45.height,
             // Text(
-            //   'Выберите свою страну',
+            //   'Просто \n Безопасно \nЭффективно',
             //   textAlign: TextAlign.center,
-            //   style: TextStyle(color: ThemeColors.baseBlack, fontSize: 18.sp, fontWeight: FontWeight.w500),
+            //   style: TextStyle(color: ThemeColors.baseBlack, fontSize: 28.sp, fontWeight: FontWeight.w500),
             // ),
-            // // SizedBox(height: 35),
-            // 10.height,
-            //
-            // GestureDetector(
-            //   onTap: () {
-            //     selectCountryNotifier.value = true;
-            //   },
-            //   child: Container(
-            //     width: 0.5.sw,
-            //     padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.r),
-            //     decoration: BoxDecoration(
-            //       border: Border.all(color: country ? ThemeColors.primaryColor : Colors.transparent),
-            //       borderRadius: BorderRadius.circular(8.r),
-            //       color: Color(0x3311d564),
-            //     ),
-            //     child: Row(
-            //       mainAxisSize: MainAxisSize.min,
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         if (country)
-            //         Icon(Icons.done, color: country ? ThemeColors.primaryColor : Color(0xff11d564), size: 18.r),
-            //         SizedBox(width: 5.r),
-            //         Text(
-            //           'Uzbekistan',
-            //           style: TextStyle(
-            //             fontWeight: FontWeight.w400,
-            //             fontSize: 14.sp,
-            //             color: country ? ThemeColors.primaryColor : Color(0xff11d564),
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            // 10.height,
-            // GestureDetector(
-            //   onTap: () {
-            //     selectCountryNotifier.value = false;
-            //   },
-            //   child: Container(
-            //     width: 0.5.sw,
-            //     padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.r),
-            //     decoration: BoxDecoration(
-            //       border: Border.all(color: !country ? ThemeColors.primaryColor : Colors.transparent),
-            //       borderRadius: BorderRadius.circular(8.r),
-            //       color: Color(0x3311d564),
-            //     ),
-            //     child: Row(
-            //       mainAxisSize: MainAxisSize.min,
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         if (!country)
-            //         Icon(Icons.done, color: !country ? ThemeColors.primaryColor : Color(0xff11d564), size: 18.r),
-            //         SizedBox(width: 5.r),
-            //         Text(
-            //           'Kazakxstan',
-            //           style: TextStyle(
-            //             fontWeight: FontWeight.w400,
-            //             fontSize: 14.sp,
-            //             color: !country ? ThemeColors.primaryColor : Color(0xff11d564),
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            // Container(
-            //   width: 1.sw,
-            //   margin: EdgeInsets.symmetric(horizontal: 15.r),
-            //   padding: EdgeInsets.all(15.r),
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(8.r),
-            //     color: Colors.white,
-            //     boxShadow: [
-            //       BoxShadow(
-            //         color: ThemeColors.primaryColor.withValues(alpha: 0.6),
-            //         offset: Offset(0, 6),
-            //         blurRadius: 14,
-            //         spreadRadius: 0,
-            //       ),
-            //     ],
-            //   ),
-            //   child: Row(
-            //     children: [
-            //       Icon(Icons.done),
-            //       10.width,
-            //       Text(
-            //         'Kazakxstan',
-            //         style: TextStyle(color: ThemeColors.baseBlack, fontWeight: FontWeight.w400, fontSize: 14.sp),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // Padding(
-            //   padding: EdgeInsets.all(15),
-            //   child: Column(
-            //     children: [
-            //       ButtonWithScale(
-            //         // isLoading: isLoading,
-            //         // onPressed: isEnable
-            //         //     ? () async {
-            //         //   loadingNotifier.value = true;
-            //         // }
-            //         //     : null,
-            //         onPressed: () {
-            //           context.router.push(LoginRoute());
-            //         },
-            //         text: 'Войти',
-            //       ),
-            //       // SizedBox(height: 5),
-            //       // ButtonWithScale(
-            //       //   color: Color(0xfff5f5f5),
-            //       //   onPressed: () {
-            //       //     context.router.push(RegisterRoute());
-            //       //   },
-            //       //   text: 'Зарегистрироваться',
-            //       //   textStyle: TextStyle(color: ThemeColors.baseBlack, fontSize: 16, fontWeight: FontWeight.w500),
-            //       // ),
-            //     ],
-            //   ),
-            // ),
+            SizedBox(height: 35),
+            Text(
+              'Выберите свою страну',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: ThemeColors.baseBlack, fontSize: 18.sp, fontWeight: FontWeight.w500),
+            ),
+            // SizedBox(height: 35),
+            10.height,
+
+            GestureDetector(
+              onTap: () {
+                selectCountryNotifier.value = true;
+                localStorage.setCountry(AppCountryEnum.uz.name);
+                localStorage.setBaseUrl(AppCountryEnum.uz.baseUrl);
+              },
+              child: Container(
+                width: 0.5.sw,
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.r),
+                decoration: BoxDecoration(
+                  border: Border.all(color: country ? ThemeColors.primaryColor : Colors.transparent),
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: Color(0x3311d564),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (country)
+                      Icon(Icons.done, color: country ? ThemeColors.primaryColor : Color(0xff11d564), size: 18.r),
+                    SizedBox(width: 5.r),
+                    Text(
+                      'Uzbekistan',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14.sp,
+                        color: country ? ThemeColors.primaryColor : Color(0xff11d564),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            10.height,
+            GestureDetector(
+              onTap: () {
+                selectCountryNotifier.value = false;
+                localStorage.setCountry(AppCountryEnum.kz.name);
+                localStorage.setBaseUrl(AppCountryEnum.kz.baseUrl);
+              },
+              child: Container(
+                width: 0.5.sw,
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.r),
+                decoration: BoxDecoration(
+                  border: Border.all(color: !country ? ThemeColors.primaryColor : Colors.transparent),
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: Color(0x3311d564),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (!country)
+                      Icon(Icons.done, color: !country ? ThemeColors.primaryColor : Color(0xff11d564), size: 18.r),
+                    SizedBox(width: 5.r),
+                    Text(
+                      'Kazakhstan',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14.sp,
+                        color: !country ? ThemeColors.primaryColor : Color(0xff11d564),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -200,11 +162,17 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         padding: EdgeInsets.symmetric(horizontal: 16.r),
         child: ButtonWithScale(
           onPressed: () {
+            updateDioBaseUrl(localStorage.getBaseUrl());
             context.router.push(LoginRoute());
           },
           text: 'Войти',
         ),
       ),
     );
+  }
+
+  void updateDioBaseUrl(String baseUrl) {
+    final dio = getIt<Dio>();
+    dio.options.baseUrl = baseUrl;
   }
 }

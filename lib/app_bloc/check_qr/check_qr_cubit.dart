@@ -14,7 +14,7 @@ class CheckQrCubit extends Cubit<CheckQrState> {
     final res = await _mainProvider.checkQr(code);
     final data = res.data;
     if (data != null) {
-      emit(CheckQrLoaded(data.toString()));
+      emit(CheckQrLoaded(data.status ?? ''));
     } else {
       emit(CheckQrError(res.message));
     }

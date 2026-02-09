@@ -12,6 +12,10 @@ class CalendarResponse {
       past: json["past"] == null ? [] : List<PastResponse>.from(json["past"]!.map((x) => PastResponse.fromJson(x))),
     );
   }
+
+  CalendarResponse copyWith({List<PastResponse>? upcoming, List<PastResponse>? past}) {
+    return CalendarResponse(upcoming: upcoming ?? this.upcoming, past: past ?? this.past);
+  }
 }
 
 class PastResponse {

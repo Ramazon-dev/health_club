@@ -18,14 +18,22 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     final router = context.router;
-    getIt<AppStorage>().getAccessToken().then((token) {
-      print('object get access token $token');
-      if (token.isNotEmpty) {
-        router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
-      } else {
-        router.push(OnBoardingRoute());
-      }
+    final appStorage = getIt<AppStorage>();
+    appStorage.getRegister().then((isRegistered) {
+      appStorage.getAccessToken().then((token) {
+        print('object get registered $isRegistered and access token $token');
+        if (token.isNotEmpty) {
+          if (isRegistered) {
+            router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
+          } else {
+            router.push(OnBoardingRoute());
+          }
+        } else {
+          router.push(OnBoardingRoute());
+        }
+      });
     });
+
     super.initState();
   }
 

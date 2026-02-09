@@ -25,7 +25,7 @@ class UserResponse {
     required this.address,
     required this.placeId,
     required this.bio,
-    required this.training,
+    required this.bmi,
   });
 
   final String? name;
@@ -37,7 +37,7 @@ class UserResponse {
   final String? address;
   final int? placeId;
   final String? bio;
-  final String? training;
+  final num? bmi;
 
   factory UserResponse.fromJson(Map<String, dynamic> json) {
     return UserResponse(
@@ -50,7 +50,7 @@ class UserResponse {
       address: json["address"],
       placeId: json["place_id"],
       bio: json["bio"],
-      training: json["training"],
+      bmi: json["bmi"],
     );
   }
 }

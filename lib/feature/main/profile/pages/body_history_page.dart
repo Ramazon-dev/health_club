@@ -43,6 +43,7 @@ class _BodyHistoryPageState extends State<BodyHistoryPage> {
               itemBuilder: (context, index) {
                 final bodyComposition = bodyCompositionHistory[index];
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       bodyComposition.date ?? '',
@@ -67,136 +68,142 @@ class _BodyHistoryPageState extends State<BodyHistoryPage> {
                             children: [
                               Row(
                                 children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Вес:',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14.sp,
-                                            color: ThemeColors.base400,
+                                  if (body.weight != null)
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Вес:',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14.sp,
+                                              color: ThemeColors.base400,
+                                            ),
                                           ),
-                                        ),
-                                        4.height,
-                                        Text(
-                                          '${body.weight} kg',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16.sp,
-                                            color: ThemeColors.black950,
+                                          4.height,
+                                          Text(
+                                            '${body.weight} kg',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16.sp,
+                                              color: ThemeColors.black950,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Жир (%):',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14.sp,
-                                            color: ThemeColors.base400,
+                                  if (body.fatPercent != null)
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Жир (%):',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14.sp,
+                                              color: ThemeColors.base400,
+                                            ),
                                           ),
-                                        ),
-                                        4.height,
-                                        Text(
-                                          '${body.fatPercent}%',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16.sp,
-                                            color: ThemeColors.black950,
+                                          4.height,
+                                          Text(
+                                            '${body.fatPercent ?? ''}%',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16.sp,
+                                              color: ThemeColors.black950,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
                                 ],
                               ),
                               20.height,
                               Row(
                                 children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Мышцы:',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14.sp,
-                                            color: ThemeColors.base400,
+                                  if (body.muscleMass != null)
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Мышцы:',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14.sp,
+                                              color: ThemeColors.base400,
+                                            ),
                                           ),
-                                        ),
-                                        4.height,
-                                        Text(
-                                          '${body.muscleMass} kg',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16.sp,
-                                            color: ThemeColors.black950,
+                                          4.height,
+                                          Text(
+                                            '${body.muscleMass ?? ''} kg',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16.sp,
+                                              color: ThemeColors.black950,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Висцеральный жир:',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14.sp,
-                                            color: ThemeColors.base400,
+                                  if (body.visceralFat != null)
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Висцеральный жир:',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14.sp,
+                                              color: ThemeColors.base400,
+                                            ),
                                           ),
-                                        ),
-                                        4.height,
-                                        Text(
-                                          '${body.visceralFat}',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16.sp,
-                                            color: ThemeColors.black950,
+                                          4.height,
+                                          Text(
+                                            '${body.visceralFat}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16.sp,
+                                              color: ThemeColors.black950,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
                                 ],
                               ),
-                              20.height,
-                              Text(
-                                'Метаболический возраст:',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.sp,
-                                  color: ThemeColors.base400,
+                              if (body.metabolicAge != null) ...[
+                                20.height,
+                                Text(
+                                  'Метаболический возраст:',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14.sp,
+                                    color: ThemeColors.base400,
+                                  ),
                                 ),
-                              ),
-                              4.height,
-                              Text(
-                                '${body.metabolicAge}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16.sp,
-                                  color: ThemeColors.black950,
+                                4.height,
+                                Text(
+                                  '${body.metabolicAge}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16.sp,
+                                    color: ThemeColors.black950,
+                                  ),
                                 ),
-                              ),
-                              20.height,
-                              ButtonWithScale(
-                                // isLoading: isLoading,
-                                // onPressed: () {},
-                                onPressed: () {
-                                  context.router.maybePop();
-                                },
-                                text: 'Скачать ТАниту (.PDF)',
-                              ),
+                              ],
+                              // 20.height,
+                              // ButtonWithScale(
+                              //   // isLoading: isLoading,
+                              //   // onPressed: () {},
+                              //   onPressed: () {
+                              //     context.router.maybePop();
+                              //   },
+                              //   text: 'Скачать ТАниту (.PDF)',
+                              // ),
                             ],
                           ),
                         );

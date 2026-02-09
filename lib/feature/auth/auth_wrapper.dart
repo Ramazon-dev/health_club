@@ -13,9 +13,11 @@ class AuthWrapper extends AutoRouter implements AutoRouteWrapper {
     // return this;
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => getIt<RegisterCubit>()),
+        // BlocProvider(create: (context) => getIt<RegisterCubit>()),
         BlocProvider(create: (context) => getIt<OtpVerifyCubit>()),
         BlocProvider(create: (context) => getIt<LoginCubit>()),
+        BlocProvider(create: (context) => getIt<WizardSlotsCubit>()),
+        // BlocProvider(create: (context) => getIt<SlotsCubit>()),
         // BlocProvider(create: (context) => getIt<AuthBloc>()),
         // BlocProvider(create: (_) => getIt<MasterProfileBloc>()),
       ],

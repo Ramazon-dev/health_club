@@ -44,14 +44,10 @@ class _MainPageState extends State<MainPage> {
           if (state is CheckQrLoaded) {
             context.showDynamicDialog(
               widgets: [
-                Text(
-                  'Успешно прошел',
-                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: ThemeColors.baseBlack),
-                ),
                 10.height,
                 Text(
                   state.success,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: ThemeColors.baseBlack),
+                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: ThemeColors.baseBlack),
                 ),
                 20.height,
                 Text(
@@ -92,8 +88,10 @@ class _MainPageState extends State<MainPage> {
                   fixedSize: 1.sw > 600 ? Size(80.r, 80.r) : Size(60.r, 60.r),
                 ),
                 onPressed: () {
+                  // AutoTabsRouter.of(context).setActiveIndex(2);
                   context.router.push(QrCodeScannerRoute());
                 },
+                // child: Icon(Icons.adjust, color: Colors.white,size: 40),
                 child: SvgPicture.asset(AppAssets.scan),
               ),
             );
@@ -115,35 +113,46 @@ class _MainPageState extends State<MainPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _NavItem(
-                        index: 0,
-                        currentIndex: tabsRouter.activeIndex,
-                        icon: AppAssets.calendar,
-                        selectedIcon: AppAssets.calendarSelected,
-                        onTap: () => tabsRouter.setActiveIndex(0),
+                      IconButton(
+                        onPressed: () => tabsRouter.setActiveIndex(0),
+                        icon: SvgPicture.asset(
+                          tabsRouter.activeIndex == 0 ? AppAssets.calendarSelected : AppAssets.calendar,
+                        ),
                       ),
-                      _NavItem(
-                        index: 1,
-                        currentIndex: tabsRouter.activeIndex,
-                        icon: AppAssets.search,
-                        selectedIcon: AppAssets.searchSelected,
-                        onTap: () => tabsRouter.setActiveIndex(1),
+                      IconButton(
+                        onPressed: () => tabsRouter.setActiveIndex(1),
+                        icon: SvgPicture.asset(
+                          tabsRouter.activeIndex == 1 ? AppAssets.searchSelected : AppAssets.search,
+                        ),
                       ),
                       const SizedBox(width: 48), // место под центральную кнопку
-                      _NavItem(
-                        index: 3,
-                        currentIndex: tabsRouter.activeIndex,
-                        icon: AppAssets.champion,
-                        selectedIcon: AppAssets.championSelected,
-                        onTap: () => tabsRouter.setActiveIndex(3),
+                      IconButton(
+                        onPressed: () => tabsRouter.setActiveIndex(3),
+                        icon: tabsRouter.activeIndex == 3
+                            ? SvgPicture.asset(
+                                AppAssets.targetArrow,
+                                height: 30.r,
+                                width: 30.r,
+                                colorFilter: ColorFilter.mode(ThemeColors.primaryColor, BlendMode.srcIn),
+                              )
+                            : SvgPicture.asset(
+                                AppAssets.target,
+                                colorFilter: ColorFilter.mode(ThemeColors.black950, BlendMode.srcIn),
+                              ),
                       ),
-                      _NavItem(
-                        index: 4,
-                        currentIndex: tabsRouter.activeIndex,
-                        icon: AppAssets.profile,
-                        selectedIcon: AppAssets.profileSelected,
-                        onTap: () => tabsRouter.setActiveIndex(4),
+                      IconButton(
+                        onPressed: () => tabsRouter.setActiveIndex(4),
+                        icon: SvgPicture.asset(
+                          tabsRouter.activeIndex == 4 ? AppAssets.profileSelected : AppAssets.profile,
+                        ),
                       ),
+                      // _NavItem(
+                      //   index: 4,
+                      //   currentIndex: tabsRouter.activeIndex,
+                      //   icon: AppAssets.profile,
+                      //   selectedIcon: AppAssets.profileSelected,
+                      //   onTap: () => tabsRouter.setActiveIndex(4),
+                      // ),
                     ],
                   ),
                 ),
@@ -224,53 +233,53 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
-class _NavItem extends StatelessWidget {
-  final int index;
-  final int currentIndex;
-  final String icon, selectedIcon;
-  final VoidCallback onTap;
+// class _NavItem extends StatelessWidget {
+//   final int index;
+//   final int currentIndex;
+//   final String icon, selectedIcon;
+//   final VoidCallback onTap;
+//
+//   const _NavItem({
+//     required this.index,
+//     required this.currentIndex,
+//     required this.icon,
+//     required this.onTap,
+//     required this.selectedIcon,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final bool isSelected = index == currentIndex;
+//     return IconButton(onPressed: onTap, icon: isSelected ? SvgPicture.asset(selectedIcon) : SvgPicture.asset(icon));
+//   }
+// }
 
-  const _NavItem({
-    required this.index,
-    required this.currentIndex,
-    required this.icon,
-    required this.onTap,
-    required this.selectedIcon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isSelected = index == currentIndex;
-    return IconButton(onPressed: onTap, icon: isSelected ? SvgPicture.asset(selectedIcon) : SvgPicture.asset(icon));
-  }
-}
-
-class BottomNavBarItemWidget extends StatelessWidget {
-  final String? icon;
-  final String? label;
-  final GestureTapCallback onTap;
-  final bool selected;
-  final bool isTablet;
-
-  const BottomNavBarItemWidget({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    required this.selected,
-    required this.isTablet,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      borderRadius: BorderRadius.circular(50),
-      onTap: onTap,
-      child: selected
-          ? SvgPicture.asset(selected ? icon! : label!, height: isTablet ? 30.h : 20.h, width: isTablet ? 30.r : 20.r)
-          : SizedBox(height: isTablet ? 30.h : 20.h, width: isTablet ? 30.r : 20.r),
-    );
-  }
-}
+// class BottomNavBarItemWidget extends StatelessWidget {
+//   final String? icon;
+//   final String? label;
+//   final GestureTapCallback onTap;
+//   final bool selected;
+//   final bool isTablet;
+//
+//   const BottomNavBarItemWidget({
+//     super.key,
+//     required this.icon,
+//     required this.label,
+//     required this.onTap,
+//     required this.selected,
+//     required this.isTablet,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//       splashColor: Colors.transparent,
+//       highlightColor: Colors.transparent,
+//       borderRadius: BorderRadius.circular(50),
+//       onTap: onTap,
+//       child: selected
+//           ? SvgPicture.asset(selected ? icon! : label!, height: isTablet ? 30.h : 20.h, width: isTablet ? 30.r : 20.r)
+//           : SizedBox(height: isTablet ? 30.h : 20.h, width: isTablet ? 30.r : 20.r),
+//     );
+//   }
+// }

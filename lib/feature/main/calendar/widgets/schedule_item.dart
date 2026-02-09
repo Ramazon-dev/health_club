@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:health_club/app_bloc/app_bloc.dart';
+import 'package:health_club/design_system/extensions/dialog_ext.dart';
 import 'package:health_club/domain/core/core.dart';
 
 import '../../../../data/network/model/calendar_response.dart';
@@ -65,6 +67,29 @@ class ScheduleItem extends StatelessWidget {
           Text(
             past.subtitle ?? '',
             style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400, color: ThemeColors.baseBlack),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (past.canCancel == true)
+                ButtonWithScale(
+                  verticalPadding: 15.h,
+                  horizontalPadding: 30.r,
+                  color: ThemeColors.base100,
+                  // color: ThemeColors.red300,
+                  onPressed: () async {
+                    final bookSlotsCubit = context.read<BookSlotCubit>();
+                    context.dialogWithSubtitle(
+                      title: 'Отменить бронь',
+                      subtitle: 'Вы действительно хотите Отменить бронь',
+                      onCancelled: () => Navigator.maybePop(context),
+                      onConfirm: () => bookSlotsCubit.cancelReserve(past.id ?? 0),
+                    );
+                  },
+                  text: 'Отменить',
+                  textStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: ThemeColors.baseBlack),
+                ),
+            ],
           ),
           SizedBox(height: 20.h),
           // Row(

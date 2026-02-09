@@ -52,6 +52,7 @@ class _PinPutPageState extends State<PinPutPage> {
             SizedBox(height: 40),
             Pinput(
               // autofocus: true,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               controller: controller,
               onChanged: (value) {
                 if (value.length == 4) {
@@ -131,9 +132,17 @@ class _PinPutPageState extends State<PinPutPage> {
         listener: (context, state) {
           if (state is OtpVerifySuccess) {
             if (state.verifyResult.wizard == true) {
-              context.router.push(RegisterRoute(step: state.verifyResult.step ?? 0));
+              context.router.pushAndPopUntil(
+                RegisterRoute(step: state.verifyResult.step ?? 0),
+                predicate: (route) => false,
+              );
             } else {
-              context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
+              context.router.pushAndPopUntil(
+                RegisterRoute(step: state.verifyResult.step ?? 0),
+                predicate: (route) => false,
+              );
+              // context.router.push(RegisterRoute(step: state.verifyResult.step ?? 0));
+              // context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
             }
           } else if (state is OtpVerifyError) {
             context.showSnackBar(state.message ?? 'error');
@@ -147,18 +156,18 @@ class _PinPutPageState extends State<PinPutPage> {
               isLoading: state is OtpVerifyLoading,
               onPressed: isEnable
                   ? () async {
-                timerController.stop();
-                // loadingNotifier.value = true;
-                context.read<OtpVerifyCubit>().verify(controller.text);
+                      timerController.stop();
+                      context.read<OtpVerifyCubit>().verify(controller.text);
+                      // context.router.push(RegisterRoute(step: 7));
 
-                // final cred = await GoogleSignUpConfigure.verifyCode(
-                //   widget.verificationId,
-                //   '111111',
-                // );
-                // print('object cred phone is ${cred?.user?.phoneNumber}');
-                // print('object cred uid is ${cred?.user?.uid}');
-                // context.router.push(MainWrapper());
-              }
+                      // final cred = await GoogleSignUpConfigure.verifyCode(
+                      //   widget.verificationId,
+                      //   '111111',
+                      // );
+                      // print('object cred phone is ${cred?.user?.phoneNumber}');
+                      // print('object cred uid is ${cred?.user?.uid}');
+                      // context.router.push(MainWrapper());
+                    }
                   : null,
               text: 'Подтвердить',
             ),

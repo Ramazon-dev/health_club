@@ -17,6 +17,10 @@ final class LoginSuccess extends LoginState {
   const LoginSuccess(this.verifyCode);
 }
 
+final class LoginWithPasswordSuccess extends LoginState {
+  const LoginWithPasswordSuccess();
+}
+
 final class LoginError extends LoginState {
   final String? message;
   const LoginError(this.message);

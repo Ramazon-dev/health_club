@@ -36,7 +36,7 @@ class AliceFactory {
     // Создаем тестовый запрос для показа уведомления Alice
     Future.delayed(const Duration(seconds: 2), () {
       // Alice должна показать уведомление если есть активные вызовы
-      debugPrint('Alice notification should be visible now');
+      print('Alice notification should be visible now');
     });
   }
 

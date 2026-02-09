@@ -9,6 +9,7 @@ export 'extensions/sized_box_ext.dart';
 export 'widgets/app_checkbox_list_tile.dart';
 export 'widgets/app_cached_network_image.dart';
 export 'widgets/empty_widget.dart';
+export 'widgets/bottom_sheet_widget.dart';
 
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_svg/flutter_svg.dart';

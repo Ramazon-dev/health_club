@@ -7,6 +7,7 @@ part 'nutrition_day_state.dart';
 
 class NutritionDayCubit extends Cubit<NutritionDayState> {
   final MainProvider _mainProvider;
+
   NutritionDayCubit(this._mainProvider) : super(NutritionDayInitial()) {
     fetchNutrition();
   }
@@ -22,10 +23,9 @@ class NutritionDayCubit extends Cubit<NutritionDayState> {
     }
   }
 
-
-  Future<void> upload(File file, String type) async {
+  Future<void> upload({required File file, required String type, required String title, required String text}) async {
     emit(NutritionDayLoading());
-    final res = await _mainProvider.uploadNutrition(image: file, type: type);
+    final res = await _mainProvider.uploadNutrition(image: file, type: type, title: title, text: text);
     final data = res.data;
     if (data != null) {
       fetchNutrition();

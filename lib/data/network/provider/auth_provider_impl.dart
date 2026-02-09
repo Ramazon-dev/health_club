@@ -14,11 +14,12 @@ class AuthProviderImpl extends AuthProvider {
   AuthProviderImpl(this.dio);
 
   @override
-  Future<ApiResponse<LoginResponse>> login(String phone) async {
-    return apiCall(
-      dio.post(Endpoints.login, data: {'phone': phone}),
-      dataFromJson: (data) => LoginResponse.fromJson(data),
-    );
+  Future<ApiResponse<LoginResponse>> login(String phone, String? password) async {
+    final map = <String, dynamic>{};
+    if (password != null) map['password'] = password;
+    map['phone'] = phone;
+
+    return apiCall(dio.post(Endpoints.login, data: map), dataFromJson: (data) => LoginResponse.fromJson(data));
     // try {
     //   final res = await dio.post(Endpoints.login, data: {'phone': phone});
     //   if (res.statusCode == 200 || res.statusCode == 201) {
@@ -94,5 +95,21 @@ class AuthProviderImpl extends AuthProvider {
   @override
   Future<ApiResponse<ClubsResponse>> wizardClubs() {
     return apiCall(dio.get(Endpoints.wizardStep(7)), dataFromJson: (data) => ClubsResponse.fromJson(data));
+  }
+
+  @override
+  Future<ApiResponse<List<String>>> wizardSlots(int placeId, String day) {
+    return apiCall(
+      dio.get(Endpoints.wizardSlots, data: {'place_id': placeId, 'date': day}),
+      dataFromJson: (data) {
+        print('object dataFromJson ${data["slots"].runtimeType}');
+        return (data['slots'] as List).map((e) => e.toString()).toList();
+      },
+    );
+  }
+
+  @override
+  Future<ApiResponse<num?>> getBmi() {
+    return apiCall(dio.get(Endpoints.wizardStep(4)), dataFromJson: (data) => (data['data']['bmi'] as num));
   }
 }

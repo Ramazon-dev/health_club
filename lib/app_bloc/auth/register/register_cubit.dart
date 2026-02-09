@@ -1,4 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_club/di/init.dart';
+import 'package:health_club/domain/core/core.dart';
+import 'package:health_club/router/app_router.dart';
 import '../../../data/network/model/clubs_response.dart';
 import '../../../data/network/model/auth/wizard_options_response.dart';
 import '../../../data/network/model/auth/wizard_response.dart';
@@ -9,24 +12,27 @@ part 'register_state.dart';
 class RegisterCubit extends Cubit<RegisterState> {
   final AuthProvider authProvider;
 
-  RegisterCubit(this.authProvider) : super(RegisterInitial(null)) {
-    getWizard();
-  }
+  RegisterCubit(this.authProvider) : super(RegisterName(null));
 
   WizardResponse? _wizardResponse;
   List<WizardOptionResponse> concerns = [];
   List<WizardOptionResponse> problems = [];
   List<WizardOptionResponse> targets = [];
   List<ClubResponse> clubs = [];
+  num bmi = 0;
 
-  Future<void> getWizard() async {
+  Future<void> getWizard(int step) async {
     emit(RegisterLoading(_wizardResponse));
     final res = await authProvider.wizardGet();
     if (res.data != null) {
       _wizardResponse = res.data;
-      emit(RegisterInitial(_wizardResponse));
+      bmi = res.data?.user?.bmi ?? 0;
+      final wizardStep = res.data?.step;
+      emit(RegisterName(_wizardResponse));
+      initializeWizardStep(wizardStep ?? step);
     } else {
-      emit(RegisterError(_wizardResponse, res.message));
+      getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      // emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -34,9 +40,9 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(RegisterName(_wizardResponse));
   }
 
-  Future<void> uploadName(String name) async {
+  Future<void> uploadName({required String name, required String surname}) async {
     emit(RegisterLoading(_wizardResponse));
-    final res = await authProvider.wizardPush(1, {'name': name});
+    final res = await authProvider.wizardPush(1, {'name': name, 'surname': surname});
     if (res.data != null) {
       final options = await getWizardOptions(2);
       if (options != null) {
@@ -44,13 +50,17 @@ class RegisterCubit extends Cubit<RegisterState> {
         emit(RegisterConcerns(_wizardResponse, passed: true, options: options));
       }
     } else {
-      emit(RegisterError(_wizardResponse, res.message));
+      getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      // emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
-  Future<void> uploadConcern(String concern) async {
+  Future<void> uploadConcern(List<String> concerns, String customText) async {
     emit(RegisterLoading(_wizardResponse));
-    final res = await authProvider.wizardPush(2, {'text': concern});
+    final map = <String, dynamic>{};
+    if (concerns.isNotEmpty) map['selected'] = concerns;
+    if (customText.isNotEmpty) map['custom_text'] = customText;
+    final res = await authProvider.wizardPush(2, map);
     if (res.data != null) {
       final options = await getWizardOptions(3);
       if (options != null) {
@@ -58,17 +68,23 @@ class RegisterCubit extends Cubit<RegisterState> {
         emit(RegisterProblems(_wizardResponse, passed: true, options: options));
       }
     } else {
-      emit(RegisterError(_wizardResponse, res.message));
+      getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      // emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
-  Future<void> uploadProblem(String problem) async {
+  Future<void> uploadProblem(List<String> problem, String customText) async {
     emit(RegisterLoading(_wizardResponse));
-    final res = await authProvider.wizardPush(3, {'text': problem});
+    final map = <String, dynamic>{};
+    if (problem.isNotEmpty) map['selected'] = problem;
+    if (customText.isNotEmpty) map['custom_text'] = customText;
+
+    final res = await authProvider.wizardPush(3, map);
     if (res.data != null) {
       emit(RegisterBodyDetails(_wizardResponse));
     } else {
-      emit(RegisterError(_wizardResponse, res.message));
+      getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      // emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -83,13 +99,25 @@ class RegisterCubit extends Cubit<RegisterState> {
       'height': int.parse(height),
       'weight': int.parse(width),
       'birthday': birthday,
-      'gender': gender ? 'M' : 'F',
+      'gender': gender ? 'M' : 'W',
     });
     if (res.data != null) {
-      emit(RegisterBodyDetailsResult(_wizardResponse));
+      final bmiRes = await authProvider.getBmi();
+      final bmi = bmiRes.data;
+      if (bmi != null) {
+        this.bmi = bmi;
+        emit(RegisterBodyDetailsResult(_wizardResponse, bmi));
+      } else {
+        getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      }
     } else {
-      emit(RegisterError(_wizardResponse, res.message));
+      getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      // emit(RegisterError(_wizardResponse, res.message));
     }
+  }
+
+  void changeToGift() {
+    emit(RegisterGift(_wizardResponse));
   }
 
   Future<void> getTargets() async {
@@ -101,13 +129,17 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  Future<void> uploadTarget(String target) async {
+  Future<void> uploadTarget(List<String> targets, String customText) async {
     emit(RegisterLoading(_wizardResponse));
-    final res = await authProvider.wizardPush(5, {'text': target});
+    final map = <String, dynamic>{};
+    if (targets.isNotEmpty) map['selected'] = targets;
+    if (customText.isNotEmpty) map['custom_text'] = customText;
+    final res = await authProvider.wizardPush(5, map);
     if (res.data != null) {
       emit(RegisterAddress(_wizardResponse));
     } else {
-      emit(RegisterError(_wizardResponse, res.message));
+      getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      // emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -121,27 +153,19 @@ class RegisterCubit extends Cubit<RegisterState> {
         emit(RegisterDiagnostics(_wizardResponse, clubs: clubs));
       }
     } else {
-      emit(RegisterError(_wizardResponse, res.message));
+      getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      // emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
-  Future<void> uploadDiagnostic({
-    required String surname,
-    required int placeId,
-    required String date,
-    required String time,
-  }) async {
+  Future<void> uploadDiagnostic({required int placeId, required String date, required String time}) async {
     emit(RegisterLoading(_wizardResponse));
-    final res = await authProvider.wizardPush(7, {
-      'surname': surname,
-      'place_id': placeId,
-      'date': date,
-      'time': time,
-    });
+    final res = await authProvider.wizardPush(7, {'place_id': placeId, 'date': date, 'time': time});
     if (res.data != null) {
       emit(RegisterSuccess(_wizardResponse));
     } else {
-      emit(RegisterError(_wizardResponse, res.message));
+      getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      // emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -152,10 +176,11 @@ class RegisterCubit extends Cubit<RegisterState> {
       final clubs = await getWizardClubs();
       if (clubs != null) {
         this.clubs = clubs;
-        emit(RegisterDiagnostics(_wizardResponse, clubs: clubs));
+        emit(RegisterSkipped(_wizardResponse));
       }
     } else {
-      emit(RegisterError(_wizardResponse, res.message));
+      getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+      // emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -163,7 +188,8 @@ class RegisterCubit extends Cubit<RegisterState> {
     final res = await authProvider.wizardClubs();
     final clubs = res.data?.clubs;
     if (clubs != null) return clubs;
-    emit(RegisterError(_wizardResponse, res.message));
+    getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+    // emit(RegisterError(_wizardResponse, res.message));
     return null;
   }
 
@@ -171,30 +197,43 @@ class RegisterCubit extends Cubit<RegisterState> {
     final wizardOptionsResponse = await authProvider.wizardGetStep(step);
     final options = wizardOptionsResponse.data?.options;
     if (options != null) return options;
-    emit(RegisterError(_wizardResponse, wizardOptionsResponse.message));
+    getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(wizardOptionsResponse.message);
+    // emit(RegisterError(_wizardResponse, wizardOptionsResponse.message));
     return null;
   }
 
   //////////////////////////// back functions
 
   Future<void> changeToConcerns({String? name}) async {
-    emit(RegisterConcerns(_wizardResponse, options: concerns));
+    final options = await getWizardOptions(2);
+    if (options != null) {
+      concerns = options;
+      emit(RegisterConcerns(_wizardResponse, passed: true, options: options));
+    }
   }
 
   Future<void> changeToProblems() async {
-      emit(RegisterProblems(_wizardResponse, options: problems));
+    final options = await getWizardOptions(3);
+    if (options != null) {
+      problems = options;
+      emit(RegisterProblems(_wizardResponse, passed: true, options: options));
+    }
   }
 
   Future<void> changeToBodyDetails() async {
-      emit(RegisterBodyDetails(_wizardResponse));
+    emit(RegisterBodyDetails(_wizardResponse));
   }
 
   Future<void> changeToBodyDetailsResult() async {
-    emit(RegisterBodyDetailsResult(_wizardResponse));
+    emit(RegisterBodyDetailsResult(_wizardResponse, bmi));
   }
 
-  void changeToTarget() {
-    emit(RegisterTarget(_wizardResponse, options: targets));
+  Future<void> changeToTarget() async {
+    final options = await getWizardOptions(5);
+    if (options != null) {
+      targets = options;
+      emit(RegisterTarget(_wizardResponse, passed: true, options: options));
+    }
   }
 
   Future<void> changeToAddress({String? target}) async {
@@ -202,7 +241,7 @@ class RegisterCubit extends Cubit<RegisterState> {
   }
 
   Future<void> changeToDiagnostics({String? address}) async {
-      emit(RegisterDiagnostics(_wizardResponse, clubs: clubs));
+    emit(RegisterDiagnostics(_wizardResponse, clubs: clubs));
   }
 
   // void changeToSuccess() {
@@ -210,8 +249,54 @@ class RegisterCubit extends Cubit<RegisterState> {
   // }
   //
   void changeToInitial() {
-    emit(RegisterInitial(_wizardResponse));
+    emit(RegisterName(_wizardResponse));
     // getWizard();
+  }
+
+  Future<void> initializeWizardStep(int step) async {
+    if (step == 1) {
+      emit(RegisterName(_wizardResponse));
+    } else if (step == 2) {
+      final options = await getWizardOptions(2);
+      if (options != null) {
+        concerns = options;
+        emit(RegisterConcerns(_wizardResponse, passed: true, options: options));
+      } else {
+        emit(RegisterName(_wizardResponse));
+        // emit(RegisterInitial(_wizardResponse));
+      }
+    } else if (step == 3) {
+      final options = await getWizardOptions(3);
+      if (options != null) {
+        problems = options;
+        emit(RegisterProblems(_wizardResponse, passed: true, options: options));
+      } else {
+        emit(RegisterName(_wizardResponse));
+        // emit(RegisterInitial(_wizardResponse));
+      }
+    } else if (step == 4) {
+      emit(RegisterBodyDetails(_wizardResponse));
+    } else if (step == 5) {
+      final options = await getWizardOptions(5);
+      if (options != null) {
+        targets = options;
+        emit(RegisterTarget(_wizardResponse, passed: true, options: options));
+      } else {
+        emit(RegisterName(_wizardResponse));
+        // emit(RegisterInitial(_wizardResponse));
+      }
+    } else if (step == 6) {
+      emit(RegisterAddress(_wizardResponse));
+    } else if (step == 7) {
+      final clubs = await getWizardClubs();
+      if (clubs != null) {
+        this.clubs = clubs;
+        emit(RegisterDiagnostics(_wizardResponse, clubs: clubs));
+      } else {
+        emit(RegisterName(_wizardResponse));
+        // emit(RegisterInitial(_wizardResponse));
+      }
+    }
   }
 
   // Future<void> registerName(String name) async {

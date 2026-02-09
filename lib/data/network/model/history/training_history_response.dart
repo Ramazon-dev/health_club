@@ -1,12 +1,14 @@
+import 'package:health_club/domain/core/core.dart';
+
 class TrainingHistoryResponse {
   TrainingHistoryResponse({required this.date, required this.trainings});
 
-  final String? date;
+  final DateTime? date;
   final List<TrainingHistoryItemResponse> trainings;
 
   factory TrainingHistoryResponse.fromJson(Map<String, dynamic> json) {
     return TrainingHistoryResponse(
-      date: json["date"],
+      date: (json["date"]).toString().parse() ?? DateTime.now(),
       trainings: json["items"] == null
           ? []
           : List<TrainingHistoryItemResponse>.from(json["items"]!.map((x) => TrainingHistoryItemResponse.fromJson(x))),

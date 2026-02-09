@@ -42,3 +42,10 @@ class SleepResponse {
     );
   }
 }
+
+enum MetricsEnum { water('История воды'), sleep('История сна'), step('История шагов');
+  final String title;
+
+  const MetricsEnum(this.title);
+
+}

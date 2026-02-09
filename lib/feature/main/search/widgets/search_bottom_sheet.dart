@@ -28,9 +28,22 @@ class _SearchBottomSheetState extends State<SearchBottomSheet> {
   final debounce = Debounce(millisecond: 500);
   final searchController = TextEditingController();
 
+  String getCategoryLocalization(String category) {
+    if (category == 'Все') {
+      return 'Все';
+    } else if (category == 'place') {
+      return '35НС';
+    } else if (category == 'partner') {
+      return 'Партнеры';
+    } else if (category == 'bonus_partner') {
+      return 'Бонусы';
+    } else {
+      return 'Другие';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    print('search bottom sheet ${widget.mapPoints.length}');
     return DraggableScrollableSheet(
       initialChildSize: 300 / 1.sh,
       minChildSize: 200 / 1.sh,
@@ -78,8 +91,16 @@ class _SearchBottomSheetState extends State<SearchBottomSheet> {
                           colorFilter: ColorFilter.mode(ThemeColors.base400, BlendMode.srcIn),
                         ),
                       ),
-                      // suffixIcon: Icon(Icons.clear,color: ThemeColors.base400, size: 20.r),
-                      hintText: 'search',
+                      suffixIcon: searchController.text.isNotEmpty
+                          ? IconButton(
+                              onPressed: () {
+                                searchController.clear();
+                                widget.mapPointsCubit.onSearch('');
+                              },
+                              icon: Icon(Icons.clear, color: ThemeColors.base400, size: 20.r),
+                            )
+                          : null,
+                      hintText: 'Поиск',
                       fillColor: ThemeColors.base100,
                       filled: true,
                     ),
@@ -182,7 +203,7 @@ class _SearchBottomSheetState extends State<SearchBottomSheet> {
                               color: index == selectedCategory ? ThemeColors.primaryColor : ThemeColors.base100,
                             ),
                             child: Text(
-                              widget.listOfCategories[index],
+                              getCategoryLocalization(widget.listOfCategories[index]),
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,
@@ -197,149 +218,176 @@ class _SearchBottomSheetState extends State<SearchBottomSheet> {
                     ),
                   ),
                   20.height,
-                  ListView.separated(
-                    itemCount: widget.mapPoints.length,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final point = widget.mapPoints[index];
-                      return Container(
-                        padding: EdgeInsets.all(10.r),
-                        decoration: BoxDecoration(
-                          color: ThemeColors.base100,
-                          borderRadius: BorderRadius.circular(10.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: ThemeColors.primaryColor.withValues(alpha: 0.2),
-                              offset: const Offset(0, 8),
-                              blurRadius: 12,
-                              spreadRadius: 0,
+                  BlocBuilder<UserLocationCubit, UserLocationState>(
+                    builder: (context, userLocationState) {
+                      return ListView.separated(
+                        itemCount: widget.mapPoints.length,
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final point = widget.mapPoints[index];
+                          return Container(
+                            padding: EdgeInsets.all(10.r),
+                            decoration: BoxDecoration(
+                              color: ThemeColors.base100,
+                              borderRadius: BorderRadius.circular(10.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: ThemeColors.primaryColor.withValues(alpha: 0.2),
+                                  offset: const Offset(0, 8),
+                                  blurRadius: 12,
+                                  spreadRadius: 0,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            if (widget.mapPointDetailCubit.state is! MapPointDetailLoading) {
-                              widget.mapPointDetailCubit.getMapPointDetail(point.type ?? '', point.id ?? 0);
-                            }
-                            // context.router.push(FitnessRoute());
-                          },
-                          child: Column(
-                            children: [
-                              Row(
+                            child: InkWell(
+                              onTap: () {
+                                if (widget.mapPointDetailCubit.state is! MapPointDetailLoading) {
+                                  widget.mapPointDetailCubit.getMapPointDetail(
+                                    point.type ?? '',
+                                    point.id ?? 0,
+                                    (userLocationState is UserLocationLoaded) ? userLocationState.latLng : null,
+                                  );
+                                }
+                                // context.router.push(FitnessRoute());
+                              },
+                              child: Column(
                                 children: [
-                                  CustomCachedNetworkImage(
-                                    imageUrl: point.imageUrl ?? '',
-                                    height: 48.r,
-                                    width: 48.r,
-                                    borderRadius: BorderRadius.circular(100),
-                                    fit: BoxFit.contain,
-                                  ),
-                                  // CircleAvatar(backgroundColor: Colors.yellow, radius: 24.r),
-                                  10.width,
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          point.title ?? '',
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 18.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: ThemeColors.baseBlack,
-                                          ),
+                                  Row(
+                                    children: [
+                                      if ((point.type ?? '') == 'place') ...[
+                                        CircleAvatar(
+                                          radius: 24.r,
+                                          backgroundColor: Colors.transparent,
+                                          child: SvgPicture.asset(AppAssets.logoSvg, height: 48.r, width: 48.r),
                                         ),
-                                        2.height,
-                                        Row(
+                                      ] else
+                                        CustomCachedNetworkImage(
+                                          imageUrl: point.imageUrl ?? '',
+                                          height: 48.r,
+                                          width: 48.r,
+                                          borderRadius: BorderRadius.circular(100),
+                                          fit: BoxFit.contain,
+                                        ),
+                                      // CircleAvatar(backgroundColor: Colors.yellow, radius: 24.r),
+                                      10.width,
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 20.r),
-                                            SizedBox(width: 5.w),
                                             Text(
-                                              '${point.rating ?? ''} ',
+                                              point.title ?? '',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
-                                                fontSize: 14.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color: ThemeColors.black950,
+                                                fontSize: 18.sp,
+                                                fontWeight: FontWeight.w500,
+                                                color: ThemeColors.baseBlack,
                                               ),
                                             ),
+                                            // 2.height,
+                                            // Row(
+                                            //   children: [
+                                            //     Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 20.r),
+                                            //     SizedBox(width: 5.w),
+                                            //     Text(
+                                            //       '${point.rating ?? ''} ',
+                                            //       style: TextStyle(
+                                            //         fontSize: 14.sp,
+                                            //         fontWeight: FontWeight.w400,
+                                            //         color: ThemeColors.black950,
+                                            //       ),
+                                            //     ),
+                                            //     Text(
+                                            //       '(${point.reviewsCount} отзывов)',
+                                            //       style: TextStyle(
+                                            //         fontSize: 14.sp,
+                                            //         fontWeight: FontWeight.w400,
+                                            //         color: ThemeColors.base400,
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  25.height,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 3.r,
+                                                backgroundColor: point.isOpen == true
+                                                    ? ThemeColors.flowKitGreen
+                                                    : ThemeColors.red300,
+                                              ),
+                                              5.width,
+                                              Text(
+                                                point.isOpen == true ? 'Открыто' : 'Закрыто',
+                                                style: TextStyle(
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: point.isOpen == true
+                                                      ? ThemeColors.flowKitGreen
+                                                      : ThemeColors.red300,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          if (point.distance != null) ...[
+                                            10.height,
                                             Text(
-                                              '(${point.reviewsCount} отзывов)',
+                                              '~${((point.distance ?? 0) / 1000).toStringAsFixed(1)} km от вас',
                                               style: TextStyle(
-                                                fontSize: 14.sp,
+                                                fontSize: 16.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: ThemeColors.base400,
                                               ),
                                             ),
                                           ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              25.height,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 3.r,
-                                            backgroundColor: point.isOpen == true
-                                                ? ThemeColors.flowKitGreen
-                                                : ThemeColors.red300,
-                                          ),
-                                          5.width,
-                                          Text(
-                                            point.isOpen == true ? 'Открыто до 18:00' : 'Закрыто',
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w400,
-                                              color: point.isOpen == true
-                                                  ? ThemeColors.flowKitGreen
-                                                  : ThemeColors.red300,
-                                            ),
-                                          ),
                                         ],
                                       ),
-                                      10.height,
-                                      Text(
-                                        '3 км от вас',
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: ThemeColors.base400,
+                                      if (point.lat != null && point.long != null)
+                                        GestureDetector(
+                                          onTap: () {
+                                            final lat = point.lat ?? '';
+                                            final long = point.long ?? '';
+                                            if (lat.isEmpty && long.isEmpty) return;
+                                            UrlLauncherService.openInExternalMap(
+                                              lat: double.parse(point.lat ?? ''),
+                                              long: double.parse(point.long ?? ''),
+                                              address: point.address,
+                                            );
+                                          },
+                                          child: SvgPicture.asset(AppAssets.map, height: 54.r, width: 54.r),
+                                        )
+                                      else if (point.address != null)
+                                        GestureDetector(
+                                          onTap: () {
+                                            final address = point.address;
+                                            if (address == null) return;
+                                            UrlLauncherService.openMapWithAddress(address: address);
+                                          },
+                                          child: SvgPicture.asset(AppAssets.map, height: 54.r, width: 54.r),
                                         ),
-                                      ),
                                     ],
                                   ),
-                                  if (point.lat != null && point.long != null)
-                                    GestureDetector(
-                                      onTap: () {
-                                        final lat = point.lat ?? '';
-                                        final long = point.long ?? '';
-                                        if (lat.isEmpty && long.isEmpty) return;
-                                        UrlLauncherService.openInExternalMap(
-                                          lat: double.parse(point.lat ?? ''),
-                                          long: double.parse(point.long ?? ''),
-                                        );
-                                      },
-                                      child: SvgPicture.asset(AppAssets.map, height: 54.r, width: 54.r),
-                                    ),
                                 ],
                               ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => SizedBox(height: 10.h),
                       );
                     },
-                    separatorBuilder: (context, index) => SizedBox(height: 10.h),
                   ),
                   (kBottomNavigationBarHeight * 2).height,
                 ],

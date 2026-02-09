@@ -5,9 +5,9 @@ sealed class RegisterState {
   const RegisterState(this.wizard);
 }
 
-class RegisterInitial extends RegisterState {
-  const RegisterInitial(super.wizard);
-}
+// class RegisterInitial extends RegisterState {
+//   const RegisterInitial(super.wizard);
+// }
 
 class RegisterLoading extends RegisterState {
   const RegisterLoading(super.wizard);
@@ -37,7 +37,12 @@ class RegisterBodyDetails extends RegisterState {
 
 class RegisterBodyDetailsResult extends RegisterState {
   final bool passed;
-  const RegisterBodyDetailsResult(super.wizard, {this.passed = false});
+  final num bmi;
+  const RegisterBodyDetailsResult(super.wizard, this.bmi, {this.passed = false});
+}
+
+class RegisterGift extends RegisterState {
+  const RegisterGift(super.wizard);
 }
 
 class RegisterTarget extends RegisterState {
@@ -61,50 +66,11 @@ class RegisterSuccess extends RegisterState {
   const RegisterSuccess(super.wizard);
 }
 
-class RegisterError extends RegisterState {
-  final String message;
-  const RegisterError(super.wizard, this.message);
+class RegisterSkipped extends RegisterState {
+  const RegisterSkipped(super.wizard);
 }
-
-
-// final bool loading;
-// final String? name;
-// final String? concern;
-// final String? problem;
-// final DateTime? birthDate;
-// final bool? isMale;
-// final bool scrollDown;
-// final BodyDetails? bodyDetails;
 //
-// RegisterState({
-//   this.loading = false,
-//   this.name,
-//   this.concern,
-//   this.problem,
-//   this.birthDate,
-//   this.isMale,
-//   this.scrollDown = false,
-//   this.bodyDetails,
-// });
-//
-// RegisterState copyWith({
-//   bool? loading,
-//   String? name,
-//   String? concern,
-//   String? problem,
-//   DateTime? birthDate,
-//   bool? isMale,
-//   bool? scrollDown,
-//   BodyDetails? bodyDetails,
-// }) {
-//   return RegisterState(
-//     loading: loading ?? this.loading,
-//     birthDate: birthDate ?? this.birthDate,
-//     isMale: isMale ?? this.isMale,
-//     name: name ?? this.name,
-//     concern: concern ?? this.concern,
-//     problem: problem ?? this.problem,
-//     scrollDown: scrollDown ?? this.scrollDown,
-//     bodyDetails: bodyDetails ?? this.bodyDetails,
-//   );
+// class RegisterError extends RegisterState {
+//   final String message;
+//   const RegisterError(super.wizard, this.message);
 // }

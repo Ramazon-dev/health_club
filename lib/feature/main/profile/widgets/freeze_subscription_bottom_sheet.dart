@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:health_club/domain/core/core.dart';
+import 'package:health_club/feature/main/profile/widgets/custom_material_localization_delegate.dart';
 
 import '../../../../design_system/design_system.dart';
 
@@ -8,11 +10,7 @@ class FreezeSubscriptionBottomSheet extends StatefulWidget {
   final ValueNotifier<DateTimeRange<DateTime>?> rangeNotifier;
   final VoidCallback onTap;
 
-  const FreezeSubscriptionBottomSheet({
-    super.key,
-    required this.rangeNotifier,
-    required this.onTap,
-  });
+  const FreezeSubscriptionBottomSheet({super.key, required this.rangeNotifier, required this.onTap});
 
   @override
   State<FreezeSubscriptionBottomSheet> createState() => _FreezeSubscriptionBottomSheetState();
@@ -33,7 +31,7 @@ class _FreezeSubscriptionBottomSheetState extends State<FreezeSubscriptionBottom
         10.height,
 
         Text(
-          'Выберите период заморозки членство:',
+          'Выберите период заморозки членство',
           style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16.sp, color: ThemeColors.base400),
         ),
         40.height,
@@ -50,11 +48,20 @@ class _FreezeSubscriptionBottomSheetState extends State<FreezeSubscriptionBottom
             final range = await showDateRangePicker(
               context: context,
               initialEntryMode: DatePickerEntryMode.calendar,
-
-              // initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime.now().add(Duration(days: 5))),
               firstDate: DateTime.now(),
               lastDate: DateTime.now().add(Duration(days: 100)),
               helpText: 'минимальный период 5 дней',
+              builder: (context, child) => Localizations.override(
+                context: context,
+                locale: Locale('ru', 'RU'),
+                delegates: [
+                  CustomMaterialLocalizationsDelegate(),
+                  GlobalCupertinoLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                ],
+                child: child ?? SizedBox.shrink(),
+              ),
             );
             if (range != null) {
               print('object range start is ${range.start} range end ${range.end}');
@@ -123,7 +130,7 @@ class _FreezeSubscriptionBottomSheetState extends State<FreezeSubscriptionBottom
                 }
                 widget.onTap.call();
               },
-              text: 'Перенести',
+              text: 'Подтвердить',
             ),
           ],
         ),

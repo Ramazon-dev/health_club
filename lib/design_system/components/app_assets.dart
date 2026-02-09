@@ -1,5 +1,6 @@
 class AppAssets {
   static const String logoSvg = 'assets/images/logo.svg';
+  static const String logoPng = 'assets/images/logo.png';
   static const String award = 'assets/images/award.svg';
   static const String awardPng = 'assets/images/award.png';
   static const String firstVisit = 'assets/images/first_visit.svg';
@@ -15,8 +16,26 @@ class AppAssets {
   static const String milaLove = 'assets/images/mila_love.svg';
   static const String milaLovePng = 'assets/images/mila_love.png';
   static const String marker = 'assets/images/marker.png';
+  static const String marker35 = 'assets/images/marker_35.png';
+  static const String image = 'assets/images/image.png';
+  static const String image2 = 'assets/images/image_2.png';
+  static const String health = 'assets/images/health.png';
+  static const String partner = 'assets/images/partner.jpg';
+  static const String ss = 'assets/images/ss.png';
+  static const String jj = 'assets/images/jj.png';
+  static const String rr = 'assets/images/rr.png';
+  static const String rrr = 'assets/images/rrr.png';
+  static const String tt = 'assets/images/tt.png';
+  static const String ttt = 'assets/images/ttt.png';
+  static const String marker05 = 'assets/images/marker_05.png';
+  static const String markerNew = 'assets/images/marker_new.png';
+  static const String circlePin = 'assets/images/circle_pin.png';
   static const String body = 'assets/images/body.svg';
   static const String bodyPng = 'assets/images/body.png';
+  static const String man = 'assets/images/man.jpg';
+  static const String woman = 'assets/images/woman.jpg';
+  static const String manWhite = 'assets/images/man_white.png';
+  static const String womanWhite = 'assets/images/woman_white.png';
 
   static const String search = 'assets/icons/search.svg';
   static const String searchSelected = 'assets/icons/search_selected.svg';
@@ -29,6 +48,8 @@ class AppAssets {
 
   static const String scan = 'assets/icons/scan.svg';
   static const String target = 'assets/icons/target.svg';
+  static const String targetIcon = 'assets/icons/target-icon.svg';
+  static const String targetArrow = 'assets/icons/target-arrow.svg';
   static const String progress = 'assets/icons/progress.svg';
   static const String apple = 'assets/icons/apple.svg';
   static const String google = 'assets/icons/google.svg';
@@ -42,6 +63,8 @@ class AppAssets {
   static const String notification = 'assets/icons/notification.svg';
   static const String notificationPinned = 'assets/icons/notification_pinned.svg';
   static const String edit = 'assets/icons/edit.svg';
+  static const String password = 'assets/icons/password.svg';
+  static const String passwordBold = 'assets/icons/password-bold.svg';
   static const String messageVector = 'assets/icons/message_vector.svg';
   static const String message = 'assets/icons/message.svg';
   static const String bodyHuman = 'assets/icons/body_human.svg';
@@ -60,10 +83,25 @@ class AppAssets {
   static const String weight = 'assets/icons/weight.svg';
   static const String cancel = 'assets/icons/cancel.svg';
   static const String done = 'assets/icons/done.svg';
+  static const String warning = 'assets/icons/warning.svg';
+  static const String alert = 'assets/icons/alert.svg';
   static const String droplet = 'assets/icons/droplet.svg';
   static const String sleeping = 'assets/icons/sleeping.svg';
-  static const String steps = 'assets/icons/steps.svg';
   static const String question = 'assets/icons/question.svg';
+  static const String food = 'assets/icons/food.svg';
+  static const String sleep = 'assets/icons/sleep.svg';
+  static const String water = 'assets/icons/water.svg';
+  static const String steps = 'assets/icons/steps.svg';
+  static const String foodPng = 'assets/icons/food.png';
+  static const String sleepPng = 'assets/icons/sleep.png';
+  static const String waterPng = 'assets/icons/water.png';
+  static const String stepsPng = 'assets/icons/step.png';
+  static const String foodTransparent = 'assets/icons/food_transparent.png';
+  static const String sleepTransparent = 'assets/icons/sleep_transparent.png';
+  static const String waterTransparent = 'assets/icons/water_transparent.png';
+  static const String stepsTransparent = 'assets/icons/steps_transparent.png';
+  static const String aiInnovation = 'assets/icons/ai-innovation.svg';
+  static const String stars = 'assets/icons/stars.svg';
 
   static const String messagePng = 'assets/icons/message.png';
 

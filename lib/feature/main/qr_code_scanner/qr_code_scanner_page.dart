@@ -85,6 +85,24 @@ class _QrCodeScannerPageState extends State<QrCodeScannerPage> {
               ),
             ),
           ),
+          Positioned(
+            top: 50.h,
+            left: 20.r,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.r),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  padding: EdgeInsets.all(3.r),
+                  decoration: BoxDecoration(color: Colors.white10),
+                  child: IconButton(
+                    onPressed: () => context.router.maybePop(),
+                    icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 18),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

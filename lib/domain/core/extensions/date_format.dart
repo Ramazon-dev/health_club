@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:health_club/domain/core/extensions/string_ext.dart';
 import 'package:intl/intl.dart';
 
@@ -6,8 +7,28 @@ extension DateFormatExt on DateTime {
     return DateFormat('dd.MM.yyy').format(this);
   }
 
+  String monthAndYear() {
+    return DateFormat('MMMM yyyy').format(this);
+  }
+
+  bool isSameDay(DateTime date) {
+    final first = DateTime(year, month, day);
+    final second = DateTime(date.year, date.month, date.day);
+    return first.isAtSameMomentAs(second);
+  }
+
+  bool isAfterOrSame(DateTime date) {
+    final first = DateTime(year, month, day);
+    final second = DateTime(date.year, date.month, date.day);
+    return  first.isAfter(second) || first.isAtSameMomentAs(second);
+  }
+
   String homeDateFormat() {
     return DateFormat('EE, dd MMM').format(this).toUppercaseFirstLetter();
+  }
+
+  String weekFormat() {
+    return DateFormat('EEEE dd MMM', 'ru_RU').format(this).toUppercaseFirstLetter();
   }
 
   String dateMonth() {
@@ -20,6 +41,10 @@ extension DateFormatExt on DateTime {
 
   String dayOfWeek() {
     return DateFormat('EEEE').format(this);
+  }
+
+  String shortDayOfWeek() {
+    return DateFormat('EE', 'ru_RU').format(this);
   }
 
   String dayOfWeekUz() {
@@ -69,7 +94,7 @@ extension DateFormatExt on DateTime {
   }
 
   String bookingDate() {
-    return DateFormat('dd MMMM HH:mm').format(this);
+    return DateFormat('dd MMMM HH:mm', 'ru_RU').format(this);
   }
 
   List<String> daysOfWeek() {
@@ -86,6 +111,15 @@ extension DateFormatExt on DateTime {
 
   String dateTimeFormatMinuteHour() {
     return DateFormat(DateFormat.HOUR_MINUTE).format(this);
+  }
+}
+
+extension TimeOfDayExt on TimeOfDay {
+  toHHmm() {
+    final now = DateTime.now();
+    final dateTime = DateTime(now.year, now.month, now.day, hour, minute);
+    final format = DateFormat.Hm();
+    return format.format(dateTime);
   }
 }
 
@@ -110,14 +144,36 @@ extension DateFromStringEx on String {
       return null;
     }
   }
+
+  DateTime? parse() {
+    try {
+      final format = DateFormat('dd.MM.yyyy');
+      return format.parse(this);
+    } catch (e) {
+      print('object tryParse error $e');
+      return null;
+    }
+  }
+  DateTime? parseFromDate() {
+    try {
+      final format = DateFormat('yyyy-MM-dd');
+      return format.parse(this);
+    } catch (e) {
+      print('object tryParse error $e');
+      return null;
+    }
+  }
 }
 
 enum DayOfWeek {
-  monday,
-  tuesday,
-  wednesday,
-  thursday,
-  friday,
-  saturday,
-  sunday,
+  monday('Понеделник'),
+  tuesday('Вторник'),
+  wednesday('Среда'),
+  thursday('Четверг'),
+  friday('Пятница'),
+  saturday('Суббота'),
+  sunday('Воскресения');
+
+  final String name;
+  const DayOfWeek(this.name);
 }

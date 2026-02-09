@@ -3,7 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>The app uses your location to show you sports clubs near you.</string>
+	<string>Ваше местоположение используется для отображения ближайших точек на карте и расчета расстояния до них.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Ваше местоположение используется для отображения точек на карте и расчета расстояния до них. Доступ в фоновом режиме может потребоваться для корректной работы встроенных картографических сервисов и сохранения данных при переключении между приложениями.</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>comgooglemaps</string>
+        <string>yandexmaps</string>
+        <string>maps</string>
+    </array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDisplayName</key>
@@ -36,7 +44,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>8</string>
+	<string>26</string>
 	<key>GIDClientID</key>
 	<string>726097598092-2aohbhsu00srhut5qieijkrm92pj5i2a.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>

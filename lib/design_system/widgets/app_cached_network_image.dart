@@ -34,7 +34,9 @@ class CustomCachedNetworkImage extends StatelessWidget {
   final EdgeInsets paddingErrorWidget;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    // print('object app cached network image url is $imageUrl');
+    return Container(
     margin: margin,
     child: ClipRRect(
       borderRadius: borderRadius,
@@ -89,7 +91,9 @@ class CustomCachedNetworkImage extends StatelessWidget {
                       : Icon(Icons.image_outlined, size: height, color: Colors.grey.shade200),
                 ),
               ),
-              errorWidget: (_, _, _) => defaultWord != null
+              errorWidget: (_, error, _) {
+                print('object app cached network error is $error');
+                return defaultWord != null
                   ? Material(
                       color: iconBackColor ?? ThemeColors.primaryColor,
                       child: Center(
@@ -103,8 +107,10 @@ class CustomCachedNetworkImage extends StatelessWidget {
                   : Padding(
                       padding: paddingErrorWidget,
                       child: SvgPicture.asset(AppAssets.logoSvg, height: height, width: width),
-                    ),
+                    );
+              },
             ),
     ),
   );
+  }
 }

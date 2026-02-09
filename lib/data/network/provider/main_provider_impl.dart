@@ -15,9 +15,13 @@ import 'package:health_club/data/network/model/map/map_detail_response.dart';
 import 'package:health_club/data/network/model/map/map_point_response.dart';
 import 'package:health_club/data/network/model/nutrition_diary_response.dart';
 import 'package:health_club/data/network/model/profile_response.dart';
+import 'package:health_club/data/network/model/slot_response.dart';
+import 'package:health_club/data/network/model/user_response.dart';
 import 'package:health_club/data/network/provider/main_provider.dart';
 
 import '../../../domain/core/core.dart';
+import '../model/check_qr_response.dart';
+import '../model/first_training_response.dart';
 import '../model/profile_request.dart';
 
 class MainProviderImpl extends MainProvider {
@@ -41,6 +45,27 @@ class MainProviderImpl extends MainProvider {
   @override
   Future<ApiResponse<ProfileResponse>> getProfile() {
     return apiCall(dio.get(Endpoints.profile), dataFromJson: (data) => ProfileResponse.fromJson(data));
+  }
+
+  @override
+  Future<ApiResponse<UserMeResponse>> getUser() async {
+    return apiCall(dio.get(Endpoints.userMe), dataFromJson: (data) => UserMeResponse.fromJson(data));
+  }
+
+  @override
+  Future<ApiResponse<bool>> changePassword(String password, String confirmationPassword) {
+    return apiCall(
+      dio.put(Endpoints.password, data: {'password': password, 'password_confirmation': confirmationPassword}),
+      dataFromJson: (data) => true,
+    );
+  }
+
+  @override
+  Future<ApiResponse<List<FirstTrainingResponse>>> getPlanedFirstTrainings() {
+    return apiCall(
+      dio.get(Endpoints.trainings),
+      dataFromJson: (data) => (data['data'] as List).map((e) => FirstTrainingResponse.fromJson(e)).toList(),
+    );
   }
 
   @override
@@ -102,10 +127,18 @@ class MainProviderImpl extends MainProvider {
   }
 
   @override
-  Future<ApiResponse<bool>> updateMetrics({int? water, double? sleepHours, int? steps}) {
+  Future<ApiResponse<bool>> updateMetrics({
+    int? water,
+    double? sleepHours,
+    String? sleepStart,
+    String? sleepEnd,
+    int? steps,
+  }) {
     final map = <String, dynamic>{};
     if (water != null) map['water_ml'] = water;
     if (sleepHours != null) map['sleep_hours'] = sleepHours;
+    if (sleepStart != null) map['sleep_start'] = sleepStart;
+    if (sleepEnd != null) map['sleep_end'] = sleepEnd;
     if (steps != null) map['steps'] = steps;
     return apiCall(dio.post(Endpoints.metrics, data: map), dataFromJson: (data) => true);
   }
@@ -119,9 +152,9 @@ class MainProviderImpl extends MainProvider {
   }
 
   @override
-  Future<ApiResponse<List<MetricHistoryResponse>>> getMetricsHistory() {
+  Future<ApiResponse<List<MetricHistoryResponse>>> getMetricsHistory(String type) {
     return apiCall(
-      dio.get(Endpoints.metricsHistory),
+      dio.get(Endpoints.metricsHistory, queryParameters: {'type': type}),
       dataFromJson: (data) => (data as List).map((e) => MetricHistoryResponse.fromJson(e)).toList(),
     );
   }
@@ -132,15 +165,26 @@ class MainProviderImpl extends MainProvider {
   }
 
   @override
-  Future<ApiResponse<bool>> uploadNutrition({required File image, required String type}) async {
+  Future<ApiResponse<bool>> uploadNutrition({
+    required File image,
+    required String type,
+    required String title,
+    required String text,
+  }) async {
+    final map = <String, dynamic>{};
+    if (title.isNotEmpty) map['title'] = title;
+    if (text.isNotEmpty) map['text'] = text;
     String fileName = image.path.split('/').last;
     final formData = FormData.fromMap({
       'image': await MultipartFile.fromFile(image.path, filename: fileName),
       'type': type,
+      ...map,
+      // 'title': title,
+      // 'text': text,
     });
     return apiCall(
       dio.post(
-        Endpoints.nutritionUpload,
+        Endpoints.nutritionUploadAnalyze,
         // data: {'image': image, 'type': type},
         data: formData,
       ),
@@ -178,13 +222,37 @@ class MainProviderImpl extends MainProvider {
   }
 
   @override
+  Future<ApiResponse<List<SlotResponse>>> getSlots(int id, int day) {
+    return apiCall(
+      dio.get(Endpoints.slots(id), queryParameters: {'day': day}),
+      dataFromJson: (data) => (data as List).map((e) => SlotResponse.fromJson(e)).toList(),
+    );
+  }
+
+  @override
+  Future<ApiResponse<bool>> bookSlot(int reservationId) {
+    return apiCall(
+      dio.post(Endpoints.slotReserve, data: {'reservation_id': reservationId}),
+      dataFromJson: (data) => true,
+    );
+  }
+
+  @override
+  Future<ApiResponse<bool>> cancelBook(int clientReservationId) {
+    return apiCall(
+      dio.post(Endpoints.cancelReserve, data: {'client_reservation_id': clientReservationId}),
+      dataFromJson: (data) => true,
+    );
+  }
+
+  @override
   Future<ApiResponse<ForecastResponse>> getForecast() {
     return apiCall(dio.get(Endpoints.forecast), dataFromJson: (data) => ForecastResponse.fromJson(data));
   }
 
   @override
-  Future<ApiResponse> checkQr(String code) {
-    return apiCall(dio.post(Endpoints.checkCode(code)), dataFromJson: (data) => data);
+  Future<ApiResponse<CheckQrResponse>> checkQr(String code) {
+    return apiCall(dio.post(Endpoints.checkCode(code)), dataFromJson: (data) => CheckQrResponse.fromJson(data));
   }
 
   @override

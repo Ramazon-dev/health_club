@@ -2,17 +2,29 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:health_club/router/app_router.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../design_system/design_system.dart';
 import 'app_bloc/app_bloc.dart';
+import 'data/storage/local_storage.dart';
 import 'di/init.dart';
 import 'domain/core/alice_factory.dart';
 
 void main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
-  configureDependencies();
+
+   Hive.init((await getApplicationDocumentsDirectory()).path);
+  final rawBox = await Hive.openBox('AppBox');
+  final localStorage = LocalStorage(rawBox);
+
+  // 2. Передаем готовый объект в DI
+  configureDependencies(localStorage);
+  //
+  // configureDependencies();
   AppBloc.init();
 
   runApp(const MyApp());
@@ -35,6 +47,13 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         designSize: const Size(375, 812),
         child: MaterialApp.router(
+          locale: Locale('ru', 'RU'),
+          localizationsDelegates: [
+            GlobalCupertinoLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [Locale('ru', 'RU')],
           debugShowCheckedModeBanner: false,
           routerConfig: router.config(),
           title: '35’ Health Clubs',
@@ -115,8 +134,8 @@ class DraggableAliceButton extends StatefulWidget {
 }
 
 class _DraggableAliceButtonState extends State<DraggableAliceButton> {
-  double top = 100;
-  double right = 20;
+  double top = 55;
+  double right = 80;
   double? startDy;
   double? startDx;
 

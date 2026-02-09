@@ -15,65 +15,25 @@ mixin UrlLauncherService {
   //   }
   // }
 
-  static Future<void> openInExternalMap({
-    required double lat,
-    required double long,
-  }) async {
-    final geoUrl = Uri.parse("geo:$lat,$long?q=$lat,$long");
-
-    if (await canLaunchUrl(geoUrl)) {
-      await launchUrl(
-        geoUrl,
-        mode: LaunchMode.externalApplication,
-      );
+  static Future<void> openInExternalMap({required double lat, required double long, String? address}) async {
+    Uri uri;
+    if (Platform.isIOS) {
+      uri = Uri.parse( "https://maps.apple.com/?ll=$lat,$long&q=${address ?? ''}");
     } else {
-      // fallback на Google Maps web
-      final webUrl = Uri.parse("https://www.google.com/maps/search/?api=1&query=$lat,$long");
-      if (await canLaunchUrl(webUrl)) {
-        await launchUrl(
-          webUrl,
-          mode: LaunchMode.externalApplication,
-        );
-      } else {
-        throw 'Could not open map';
-      }
+      uri = Uri.parse("geo:$lat,$long?q=$lat,$long(${Uri.encodeComponent(address ?? '')})");
     }
-
-    // final encoded = Uri.encodeComponent('$lat, $long');
-    // final appleUrl = Uri.parse('http://maps.apple.com/?q=$encoded');
-    // final googleUrl = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encoded');
-    // final url = Platform.isIOS ? appleUrl : googleUrl;
-    //
-    // if (await canLaunchUrl(url)) {
-    //   await launchUrl(url, mode: LaunchMode.externalApplication);
-    // } else {
-    //   print('object can not launch url');
-    // }
-    // final query = '$lat,$long';
-    // final uri = Platform.isAndroid
-    //     ? Uri(scheme: 'geo', host: '0,0', queryParameters: {'q': query})
-    //     : Uri.https('maps.apple.com', '/', {'q': query});
-    // final bool canOpen = await canLaunchUrl(uri);
-    // if (canOpen) {
-    //   await launchUrl(
-    //     uri,
-    //     mode: LaunchMode.externalApplication,
-    //   );
-    // }
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw Exception('Something is went wrong');
+    }
   }
 
-  static Future<void> openMapWithAddress({
-    required String address,
-  }) async {
+  static Future<void> openMapWithAddress({required String address}) async {
     final uri = Platform.isAndroid
         ? Uri(scheme: 'geo', host: '0,0', queryParameters: {'q': address})
         : Uri.https('maps.apple.com', '/', {'q': address});
     final bool canOpen = await canLaunchUrl(uri);
     if (canOpen) {
-      await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      );
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 
@@ -107,7 +67,7 @@ mixin UrlLauncherService {
   }
 
   static Future<void> sentPhone(String phone) async {
-    final url = Uri.parse('tel://$phone');
+    final url = Uri.parse('tel:$phone');
     final launch = await launchUrl(url);
     if (!launch) {
       throw Exception('phone can not be sent');
