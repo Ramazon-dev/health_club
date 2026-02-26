@@ -33,7 +33,7 @@ class SignUpForPartnerWidget extends StatelessWidget {
                       await CustomSneakBar.show(
                         context: context,
                         status: SneakBarStatus.success,
-                        title: 'Бронирования успешно прошло',
+                        title: state.message,
                       );
                       calendarCubit.fetchCalendar();
                     } else if (state is BookSlotError) {

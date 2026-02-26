@@ -13,8 +13,9 @@ final class TrainingHistoryLoading extends TrainingHistoryState {
 }
 
 final class TrainingHistoryLoaded extends TrainingHistoryState {
-  final List<TrainingHistoryResponse> trainingHistory;
-  const TrainingHistoryLoaded(this.trainingHistory);
+  final List<PastResponse> upcoming;
+  final List<PastResponse> past;
+  const TrainingHistoryLoaded({required this.upcoming, required this.past});
 }
 
 final class TrainingHistoryError extends TrainingHistoryState {

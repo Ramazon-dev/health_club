@@ -264,7 +264,7 @@ class _SearchBottomSheetState extends State<SearchBottomSheet> {
                                         ),
                                       ] else
                                         CustomCachedNetworkImage(
-                                          imageUrl: point.imageUrl ?? '',
+                                          imageUrl: point.lowImageUrl ?? '',
                                           height: 48.r,
                                           width: 48.r,
                                           borderRadius: BorderRadius.circular(100),

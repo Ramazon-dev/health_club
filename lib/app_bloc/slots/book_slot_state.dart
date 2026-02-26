@@ -13,7 +13,8 @@ final class BookSlotLoading extends BookSlotState {
 }
 
 final class BookSlotLoaded extends BookSlotState {
-  const BookSlotLoaded();
+  final String message;
+  const BookSlotLoaded(this.message);
 }
 
 final class BookSlotError extends BookSlotState {

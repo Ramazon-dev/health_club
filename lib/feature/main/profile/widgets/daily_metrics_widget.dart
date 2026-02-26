@@ -47,7 +47,7 @@ class _DailyMetricsWidgetState extends State<DailyMetricsWidget> {
             return Column(
               children: [
                 SizedBox(
-                  height: 155.h,
+                  height: 156.h,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -272,7 +272,7 @@ class _DailyMetricsWidgetState extends State<DailyMetricsWidget> {
                 ),
                 10.height,
                 SizedBox(
-                  height: 155.h,
+                  height: 156.h,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

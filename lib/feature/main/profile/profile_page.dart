@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:health_club/app_bloc/app_bloc.dart';
 import 'package:health_club/design_system/design_system.dart';
 import 'package:health_club/design_system/widgets/network_image.dart';
+import 'package:health_club/domain/core/core.dart';
 import 'package:health_club/feature/main/profile/widgets/daily_metrics_widget.dart';
 import 'package:health_club/feature/main/profile/widgets/extension_widget.dart';
 import 'package:health_club/feature/main/profile/widgets/profile_processing_widget.dart';
@@ -134,108 +135,53 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: EdgeInsetsGeometry.symmetric(horizontal: 20.r),
               child: Column(
                 children: [
-                  // 10.height,
-                  // ButtonWithScale(
-                  //   // isLoading: isLoading,
-                  //   onPressed: () async {
-                  //     // context.router.push(DailyReportRoute());
-                  //     context.router.push(DailyReportResultRoute());
-                  //   },
-                  //   text: 'Дневной отчёт',
-                  // ),
-                  // 10.height,
-                  // Container(
-                  //   padding: EdgeInsets.all(15.r),
-                  //   // decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.r), color: Color(0x33ffffff)),
-                  //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.r), color: Colors.white),
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       if (true) ...[
-                  //         Align(
-                  //           alignment: Alignment.center,
-                  //           child: SvgPicture.asset(
-                  //             AppAssets.stars,
-                  //             colorFilter: ColorFilter.mode(ThemeColors.statusYellow, BlendMode.srcIn),
-                  //             height: 50.r,
-                  //             width: 50.r,
-                  //           ),
-                  //         ),
-                  //         10.height,
-                  //         Center(
-                  //           child: Text(
-                  //             'Начните свой фитнес-путь сегодня!',
-                  //             style: TextStyle(
-                  //               color: ThemeColors.baseBlack,
-                  //               fontSize: 16.sp,
-                  //               fontWeight: FontWeight.w500,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //         10.height,
-                  //         Text(
-                  //           'Первый шаг к лучшей версии себя - всего в одном клике.',
-                  //           style: TextStyle(
-                  //             fontWeight: FontWeight.w400,
-                  //             fontSize: 14.sp,
-                  //             color: ThemeColors.baseBlack,
-                  //           ),
-                  //           textAlign: TextAlign.center,
-                  //         ),
-                  //         10.height,
-                  //         ButtonWithScale(
-                  //           color: ThemeColors.statusColor,
-                  //           text: 'Записаться на пробную тренировку',
-                  //           textStyle: TextStyle(
-                  //             color: ThemeColors.baseBlack,
-                  //             fontSize: 14.sp,
-                  //             fontWeight: FontWeight.w500,
-                  //           ),
-                  //           onPressed: () {},
-                  //         ),
-                  //       ],
-                  //     ],
-                  //   ),
-                  // ),
                   10.height,
                   BlocBuilder<ProfileCubit, ProfileState>(
                     builder: (context, state) {
-                      return Container(
-                        // height: 230.h,
-                        width: 1.sw,
-                        padding: EdgeInsets.all(15.r),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.r), color: Colors.white),
-                        child: Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: const Text(
-                                'Ваши тренировки за 30 дней',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      return GestureDetector(
+                        onTap: () {
+                          context.router.push(ProcessInMonthRoute());
+                        },
+                        child: Container(
+                          // height: 230.h,
+                          width: 1.sw,
+                          padding: EdgeInsets.all(15.r),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.r), color: Colors.white),
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: const Text(
+                                  'Ваши тренировки за 30 дней',
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            GestureDetector(
-                              onTap: () {
-                                context.router.push(ProcessInMonthRoute());
-                              },
-                              child: (state is ProfileLoaded)
-                                  ? ProfileProcessingWidget(process: state.profile.monthProgress?.percent ?? 0)
-                                  : ProfileProcessingWidget(process: 0),
-                            ),
-                            // ProgressGauge(progress: 0.8),
-                            const SizedBox(height: 12),
-                            if (state is ProfileLoaded)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '${state.profile.monthProgress?.current}/${state.profile.monthProgress?.target} ',
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                                  ),
-                                ],
-                              ),
-                          ],
+                              const SizedBox(height: 16),
+                              if (state is ProfileLoaded)
+                                ProfileProcessingWidget(process: state.profile.monthProgress?.percent ?? 0)
+                              else
+                                ProfileProcessingWidget(process: 0),
+                              const SizedBox(height: 12),
+                              if (state is ProfileLoaded)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Начало: ${state.profile.monthProgress?.cycleStart?.dateFormat() ?? ''}',
+                                      style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      '${state.profile.monthProgress?.current}/${state.profile.monthProgress?.target} ',
+                                      style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      'Конец: ${state.profile.monthProgress?.cycleEnd?.dateFormat() ?? ''}',
+                                      style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
                         ),
                       );
                     },

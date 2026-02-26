@@ -45,12 +45,14 @@ class BreakfastResponse {
 }
 
 class AnalysisResponse {
-  AnalysisResponse({required this.mealsResponse});
+  AnalysisResponse({required this.mealsResponse, this.error});
 
   final List<MealsResponse> mealsResponse;
+  final String? error;
 
   factory AnalysisResponse.fromJson(Map<String, dynamic> json) {
     return AnalysisResponse(
+      error: json["error"],
       mealsResponse: json["meals"] == null
           ? []
           : List<MealsResponse>.from(json["meals"]!.map((x) => MealsResponse.fromJson(x))),
@@ -61,11 +63,11 @@ class AnalysisResponse {
 class MealsResponse {
   final bool? isFood;
   final String? name;
-  final int? calories;
-  final int? protein;
-  final int? fat;
-  final int? carbs;
-  final int? rating;
+  final num? calories;
+  final num? protein;
+  final num? fat;
+  final num? carbs;
+  final num? rating;
   final String? verdict;
   final String? status;
   final String? recommendation;

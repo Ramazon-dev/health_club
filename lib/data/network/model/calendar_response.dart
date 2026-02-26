@@ -22,6 +22,7 @@ class PastResponse {
   PastResponse({
     required this.id,
     required this.type,
+    required this.trainingStatus,
     required this.title,
     required this.subtitle,
     required this.date,
@@ -36,6 +37,7 @@ class PastResponse {
 
   final int? id;
   final String? type;
+  final int? trainingStatus;
   final String? title;
   final String? subtitle;
   final DateTime? date;
@@ -51,6 +53,7 @@ class PastResponse {
     return PastResponse(
       id: json["id"],
       type: json["type"],
+      trainingStatus: json["training_status"],
       title: json["title"],
       subtitle: json["subtitle"],
       date: DateTime.tryParse(json["date"] ?? ""),

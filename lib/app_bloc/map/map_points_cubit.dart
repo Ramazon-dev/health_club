@@ -22,7 +22,9 @@ class MapPointsCubit extends Cubit<MapPointsState> {
 
   final List<String> listOfCategories = ['Все'];
   String searchQuery = '';
+  String selectedCategory = 'Все';
   List<MapPointResponse> mapPoints = [];
+  List<MapPointResponse> pointsByCategory = [];
   LatLng? latLng;
 
   void onUserLocationFetch(LatLng latLng) {
@@ -30,7 +32,7 @@ class MapPointsCubit extends Cubit<MapPointsState> {
       emit(MapPointsLoading());
     }
     this.latLng = latLng;
-    emit(MapPointsLoaded(checkUserLocationIsNull(mapPoints), listOfCategories));
+    emit(MapPointsLoaded(checkUserLocationIsNull(pointsByCategory), listOfCategories));
   }
 
   List<MapPointResponse> checkUserLocationIsNull(List<MapPointResponse> points) {
@@ -80,6 +82,7 @@ class MapPointsCubit extends Cubit<MapPointsState> {
         if (!contains) listOfCategories.add(item.type ?? '');
       }
       mapPoints = data;
+      pointsByCategory = data;
       emit(MapPointsLoaded(checkUserLocationIsNull(data), listOfCategories));
     } else {
       MapPointsError(res.message);
@@ -90,7 +93,9 @@ class MapPointsCubit extends Cubit<MapPointsState> {
     searchQuery = query;
     print('object onSearch $query map points ${mapPoints.length}');
     if (query.isEmpty) {
-      emit(MapPointsLoaded(checkUserLocationIsNull(mapPoints), listOfCategories));
+      pointsByCategory = mapPoints;
+      onCategoryChanged(selectedCategory);
+      // emit(MapPointsLoaded(checkUserLocationIsNull(pointsByCategory), listOfCategories));
       return;
     } else {
       emit(MapPointsLoaded([], listOfCategories));
@@ -98,7 +103,7 @@ class MapPointsCubit extends Cubit<MapPointsState> {
       //     .where((element) => element.title?.toLowerCase().contains(query.toLowerCase()) == true)
       //     .toList();
       await Future.delayed(Duration(seconds: 1));
-      emit(MapPointsLoaded(checkUserLocationIsNull(mapPoints), listOfCategories));
+      emit(MapPointsLoaded(checkUserLocationIsNull(pointsByCategory), listOfCategories));
     }
   }
 
@@ -115,6 +120,8 @@ class MapPointsCubit extends Cubit<MapPointsState> {
       }
     }
     print('object onCategoryChanged $category points ${points.length}');
+    pointsByCategory = points;
+    selectedCategory = category;
     emit(MapPointsLoaded(checkUserLocationIsNull(points), listOfCategories));
   }
 }

@@ -76,7 +76,7 @@ class _CommentPageState extends State<CommentPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(15.r),
+        padding: EdgeInsets.only(left: 15.r, right: 15.r, bottom: 30.h, top: 15.h),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,

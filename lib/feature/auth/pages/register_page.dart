@@ -85,21 +85,6 @@ class _RegisterPageState extends State<RegisterPage> {
             backgroundColor: Colors.white,
             surfaceTintColor: Colors.white,
             toolbarHeight: kToolbarHeight + 10.h,
-            // leadingWidth: 20.w + 54.h,
-            // leading: InkWell(
-            //   onTap: () {
-            //     Navigator.of(context).maybePop();
-            //   },
-            //   child: Center(
-            //     child: Container(
-            //       margin: EdgeInsets.only(left: 16.r, top: 10.h),
-            //       height: 54.h,
-            //       width: 54.h,
-            //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.r), color: ThemeColors.base100),
-            //       child: Icon(Icons.arrow_back_ios_outlined, color: Colors.black, size: 18.sp),
-            //     ),
-            //   ),
-            // ),
             actions: [
               BlocBuilder<RegisterCubit, RegisterState>(
                 builder: (context, state) {
@@ -118,19 +103,28 @@ class _RegisterPageState extends State<RegisterPage> {
             ],
           ),
           bottomNavigationBar: BlocBuilder<RegisterCubit, RegisterState>(
+            buildWhen: (previous, current) => current is! RegisterError && current is! RegisterLoading,
             builder: (context, state) {
+              print('object register page bottom nav bar builder state $state');
+
               return Padding(
-                padding: EdgeInsets.all(16.r),
-                child: state is RegisterName
+                padding: EdgeInsets.only(left: 15.r, right: 15.r, bottom: 30.h, top: 15.h),
+                child: (state is RegisterName || state is RegisterSuccess)
                     ? ButtonWithScale(
                         onPressed: () {
+                          print('object register page bottom nav bar builder state $state');
                           final cubit = context.read<RegisterCubit>();
-                          if (nameController.text.isEmpty) {
-                            context.showSnackBar('Введите имя');
-                          } else if (lastnameController.text.isEmpty) {
-                            context.showSnackBar('Введите фамилию');
-                          } else {
-                            cubit.uploadName(name: nameController.text, surname: lastnameController.text);
+                          if (state is RegisterName) {
+                            if (nameController.text.isEmpty) {
+                              context.showSnackBar('Введите имя');
+                            } else if (lastnameController.text.isEmpty) {
+                              context.showSnackBar('Введите фамилию');
+                            } else {
+                              cubit.uploadName(name: nameController.text, surname: lastnameController.text);
+                            }
+                          } else if (state is RegisterSuccess) {
+                            getIt<AppStorage>().setRegister(true);
+                            context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
                           }
                           // cubit.changeToName();
                         },
@@ -144,6 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             height: 60.h,
                             color: ThemeColors.base100,
                             onPressed: () {
+                              print('object register page bottom nav bar builder state $state');
                               changeScroll();
                               final cubit = context.read<RegisterCubit>();
                               // if (state is RegisterName) {
@@ -165,8 +160,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 cubit.changeToTarget();
                               } else if (state is RegisterDiagnostics) {
                                 cubit.changeToAddress();
-                              } else if (state is RegisterSuccess) {
-                                cubit.changeToDiagnostics();
+                              // } else if (state is RegisterSuccess) {
+                              //   cubit.changeToDiagnostics();
                               }
                             },
                             text: 'Назад',
@@ -185,6 +180,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ? ThemeColors.statusRed
                                 : ThemeColors.primaryColor,
                             onPressed: () {
+                              print('object register page bottom nav bar builder state $state');
                               changeScroll();
                               final cubit = context.read<RegisterCubit>();
                               // if (state is RegisterInitial) {
@@ -260,6 +256,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     '${selectedRegionNotifier.value?.name ?? ''} - ${selectedDistrictNotifier.value?.name ?? ''}',
                                   );
                                 }
+                                selectedClubNotifier.value = null;
                                 // if (addressController.text.isNotEmpty) {
                                 //   cubit.uploadAddress(addressController.text);
                                 // } else {
@@ -279,9 +276,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                     time: selectedTime.value!,
                                   );
                                 }
-                              } else if (state is RegisterSuccess) {
-                                getIt<AppStorage>().setRegister(true);
-                                context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
+                              // } else if (state is RegisterSuccess) {
+                              //   getIt<AppStorage>().setRegister(true);
+                              //   context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
                               }
                             },
                           ),
@@ -292,7 +289,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
 
           body: BlocConsumer<RegisterCubit, RegisterState>(
-            buildWhen: (previous, current) => current is! RegisterLoading,
+            buildWhen: (previous, current) => current is! RegisterLoading && current is! RegisterError,
             listener: (context, state) {
               if (state is RegisterName) {
                 final wizard = state.wizard;
@@ -305,21 +302,39 @@ class _RegisterPageState extends State<RegisterPage> {
                 widthController.text = wizard.user?.weight ?? '';
                 addressController.text = wizard.user?.address ?? '';
               } else
-              // if (state is RegisterError) {
-              //   print('object RegisterCubit Error state changed ${state.message}');
-              // } else
+              if (state is RegisterError) {
+                print('object RegisterCubit Error state changed ${state.message}');
+
+              } else
               if (state is RegisterConcerns) {
                 selectedConcernNotifier.value = state.options;
+                final other = state.options.firstWhereOrNull((element) => element.text == 'Другое');
+                showOtherConcern = other?.selected == true;
+                // if (other != null) {
+                //   otherConcernController.text = other.text ?? '';
+                // }
               } else if (state is RegisterProblems) {
                 selectedProblemNotifier.value = state.options;
+                final other = state.options.firstWhereOrNull((element) => element.text == 'Другое');
+                showOtherProblem = other?.selected == true;
+                // if (other != null) {
+                //   otherProblemController.text = other.text ?? '';
+                // }
               } else if (state is RegisterTarget) {
                 selectedTargetNotifier.value = state.options;
+                final other = state.options.firstWhereOrNull((element) => element.text == 'Другое');
+                showOtherTarget = other?.selected == true;
+                // if (other != null) {
+                //   otherTargetController.text = other.text ?? '';
+                // }
               } else if (state is RegisterSkipped) {
                 getIt<AppStorage>().setRegister(true);
                 context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
               }
             },
-            builder: (context, state) => SizedBox(
+            builder: (context, state) {
+              print('object register page body builder state $state');
+              return SizedBox(
               height: 1.sh,
               child: Stack(
                 children: [
@@ -414,7 +429,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               );
                               return Column(
                                 children: [
-                                  if (firstSelected != null && !showOtherConcern) ...[
+                                  if (firstSelected != null) ...[
                                     MessageItem(text: firstSelected.answer ?? '', boxColor: Color(0xff70C5C7)),
                                     20.height,
                                   ],
@@ -428,11 +443,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                         onTap: () {
                                           selectedConcernNotifier.value = List.generate(selectedCorner.length, (i) {
                                             final cons = selectedCorner[i];
-                                            return i == index
+                                            final item = i == index
                                                 ? corner.copyWith(selected: !(cons.selected ?? false))
                                                 : cons;
+                                            if (item.text == 'Другое') {
+                                              showOtherConcern = item.selected == true;
+                                            }
+                                            return item;
                                           });
-                                          showOtherConcern = corner.text == 'Другое';
                                           setState(() {});
                                         },
                                         child: ListItem(title: corner.text ?? '', selected: corner.selected ?? false),
@@ -473,7 +491,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               );
                               return Column(
                                 children: [
-                                  if (firstSelected != null && !showOtherProblem) ...[
+                                  if (firstSelected != null) ...[
                                     MessageItem(text: firstSelected.answer ?? '', boxColor: Color(0xff70C5C7)),
                                     20.height,
                                   ],
@@ -487,11 +505,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                         onTap: () {
                                           selectedProblemNotifier.value = List.generate(selectedProblem.length, (i) {
                                             final cons = selectedProblem[i];
-                                            return i == index
+                                            final item =  i == index
                                                 ? problem.copyWith(selected: !(cons.selected ?? false))
                                                 : cons;
+                                            if (item.text == 'Другое') {
+                                              showOtherProblem = item.selected == true;
+                                            }
+                                            return item;
                                           });
-                                          showOtherProblem = problem.text == 'Другое';
                                           setState(() {});
                                         },
                                         child: Container(
@@ -767,11 +788,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                         onTap: () {
                                           selectedTargetNotifier.value = List.generate(selectedTarget.length, (i) {
                                             final cons = selectedTarget[i];
-                                            return i == index
+                                            final item = i == index
                                                 ? target.copyWith(selected: !(cons.selected ?? false))
                                                 : cons;
+                                            if (item.text == 'Другое') {
+                                              showOtherTarget =  item.selected == true;
+                                            }
+                                            return item;
                                           });
-                                          showOtherTarget = target.text == 'Другое';
                                           setState(() {});
                                         },
                                         child: Container(
@@ -795,7 +819,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     separatorBuilder: (context, index) => SizedBox(height: 10.h),
                                     itemCount: state.options.length,
                                   ),
-                                  if (firstSelected != null && showOtherTarget) ...[
+                                  if (firstSelected != null) ...[
                                     20.height,
                                     MessageItem(text: firstSelected.answer ?? '', boxColor: Color(0xff70C5C7)),
                                   ],
@@ -842,6 +866,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           ValueListenableBuilder(
                             valueListenable: selectedRegionNotifier,
                             builder: (context, selectedRegion, child) {
+                              final isCountryUz = context.read<LoginCubit>().selectedCountryUz;
+                              final regions = isCountryUz ? allRegions : allRegionsKz;
                               return DropdownButtonFormField2(
                                 value: selectedRegion,
                                 enableFeedback: true,
@@ -852,7 +878,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     selectedDistrictNotifier.value = null;
                                   }
                                 },
-                                items: allRegions
+                                items: regions
                                     .map(
                                       (e) => DropdownMenuItem(
                                         value: e,
@@ -960,10 +986,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               enableFeedback: true,
                               isExpanded: true,
                               onChanged: (value) {
+                                final wizardSlotsCubit = context.read<WizardSlotsCubit>();
                                 selectedClubNotifier.value = value;
                                 final date = dateController.text.parseFromDate();
                                 if (date != null && value != null) {
                                   selectedTime.value = null;
+                                  wizardSlotsCubit.fetchSlots(value.id ?? 0, date.dateForRequest());
                                   // context.read<SlotsCubit>().getSlots(value.id ?? 0, date.weekday);
                                 }
                               },
@@ -979,6 +1007,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                         children: [
                                           Text(
                                             e.title ?? '',
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                             style: TextStyle(
                                               fontSize: 16.sp,
                                               fontWeight: FontWeight.w500,
@@ -986,8 +1016,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                             ),
                                           ),
                                           Text(
-                                            e.address ?? '',
+                                            (e.address ?? '').replaceAll('\n', ' '),
                                             overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                             style: TextStyle(
                                               fontSize: 14.sp,
                                               fontWeight: FontWeight.w400,
@@ -1119,7 +1150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           Text(
                             'Готово, ${nameController.text}! Вы сделали первый шаг ✅',
                             style: TextStyle(
-                              fontSize: 30.sp,
+                              fontSize: 26.sp,
                               fontWeight: FontWeight.w500,
                               color: ThemeColors.baseBlack,
                             ),
@@ -1127,7 +1158,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           10.height,
                           Text(
                             'Мы с нетерпением ждем Вас на бесплатный комплексный анализ состава тела и консультацию!',
-                            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w400, color: ThemeColors.base400),
+                            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400, color: ThemeColors.base400),
                           ),
                           30.height,
                           Container(
@@ -1160,7 +1191,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Фамилия',
+                                      'Имя',
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w400,
@@ -1169,6 +1200,28 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                     Text(
                                       nameController.text,
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: ThemeColors.baseBlack,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Divider(height: 20.h),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Фамилия',
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: ThemeColors.base400,
+                                      ),
+                                    ),
+                                    Text(
+                                      lastnameController.text,
                                       style: TextStyle(
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w400,
@@ -1191,15 +1244,30 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                     30.width,
                                     Expanded(
-                                      child: Text(
-                                        selectedClubNotifier.value?.address ?? '',
-                                        maxLines: 2,
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: ThemeColors.baseBlack,
-                                        ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            selectedClubNotifier.value?.title ?? '',
+                                            textAlign: TextAlign.end,
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: ThemeColors.baseBlack,
+                                            ),
+                                          ),
+                                          10.height,
+                                          Text(
+                                            selectedClubNotifier.value?.address ?? '',
+                                            maxLines: 2,
+                                            textAlign: TextAlign.end,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400,
+                                              color: ThemeColors.baseBlack,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -1251,31 +1319,15 @@ class _RegisterPageState extends State<RegisterPage> {
                               ],
                             ),
                           ),
-                          // 20.height,
-                          // MessageItem(
-                          //   text:
-                          //       'Не волнуйтесь насчет специальной одежды или подготовки. Просто приходите. У нас уютная студия, где все внимание специалист уделит только вам. До встречи! 😊',
-                          //   boxColor: Color(0xff70C5C7),
-                          // ),
-                          // ]
-                          // else if (state is RegisterError) ...[
-                          //   (1.sh / 3).toInt().height,
-                          //   Center(
-                          //     child: Text(
-                          //       'Что то пошло не так',
-                          //       style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400, color: ThemeColors.base400),
-                          //     ),
-                          //   ),
                         ],
-                        SizedBox(height: (kBottomNavigationBarHeight + 20.h)),
+                        SizedBox(height: (kBottomNavigationBarHeight + 40.h)),
                       ],
                     ),
                   ),
-                  // if (state is! RegisterInitial)
-                  //   Positioned(left: 0, bottom: 0, child: SizedBox(height: 200, child: Image.asset(AppAssets.mila))),
                 ],
               ),
-            ),
+            );
+            },
           ),
         ),
       ),

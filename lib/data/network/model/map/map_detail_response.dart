@@ -18,6 +18,7 @@ class MapDetailDataResponse {
   MapDetailDataResponse({
     required this.id,
     required this.type,
+    required this.partnerType,
     required this.title,
     required this.address,
     required this.lat,
@@ -40,6 +41,7 @@ class MapDetailDataResponse {
 
   final int? id;
   final String? type;
+  final String? partnerType;
   final String? title;
   final String? address;
   final String? lat;
@@ -63,6 +65,7 @@ class MapDetailDataResponse {
     return MapDetailDataResponse(
       id: json["id"],
       type: json["type"],
+      partnerType: json["partner_type"],
       title: json["title"],
       address: json["address"],
       lat: json["lat"],
@@ -98,6 +101,7 @@ class MapDetailDataResponse {
     return MapDetailDataResponse(
       id: id,
       type: type,
+      partnerType: partnerType,
       title: title,
       address: address,
       lat: lat,
@@ -196,6 +200,8 @@ class OtherBranchResponse {
     required this.long,
     required this.distance,
     required this.avatar,
+    required this.imageUrl,
+    required this.lowImageUrl,
     required this.rating,
     required this.reviewsCount,
     required this.isOpen,
@@ -210,6 +216,8 @@ class OtherBranchResponse {
   final String? long;
   final double? distance;
   final String? avatar;
+  final String? imageUrl;
+  final String? lowImageUrl;
   final double? rating;
   final int? reviewsCount;
   final bool? isOpen;
@@ -225,6 +233,8 @@ class OtherBranchResponse {
       long: json["long"],
       distance: json["distance"],
       avatar: json["avatar"],
+      imageUrl: json["image_url"],
+      lowImageUrl: json["low_image_url"],
       rating: json["rating"],
       reviewsCount: json["reviews_count"],
       isOpen: json["is_open"],
@@ -242,6 +252,8 @@ class OtherBranchResponse {
       long: long,
       distance: distance ?? this.distance,
       avatar: avatar,
+      imageUrl: imageUrl,
+      lowImageUrl: lowImageUrl,
       rating: rating,
       reviewsCount: reviewsCount,
       isOpen: isOpen,

@@ -70,7 +70,7 @@ class RegisterSkipped extends RegisterState {
   const RegisterSkipped(super.wizard);
 }
 //
-// class RegisterError extends RegisterState {
-//   final String message;
-//   const RegisterError(super.wizard, this.message);
-// }
+class RegisterError extends RegisterState {
+  final String message;
+  const RegisterError(super.wizard, this.message);
+}

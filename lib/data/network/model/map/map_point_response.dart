@@ -12,6 +12,7 @@ class MapPointResponse {
     required this.reviewsCount,
     required this.workHours,
     required this.imageUrl,
+    required this.lowImageUrl,
     required this.isOpen,
     required this.category,
     required this.distance,
@@ -27,6 +28,7 @@ class MapPointResponse {
   final int? reviewsCount;
   final List<WorkingHourResponse> workHours;
   final String? imageUrl;
+  final String? lowImageUrl;
   final bool? isOpen;
   final String? category;
   final double? distance;
@@ -47,6 +49,7 @@ class MapPointResponse {
           ? List<WorkingHourResponse>.from(json["work_hours"]!.map((x) => WorkingHourResponse.fromJson(x)))
           : [],
       imageUrl: json["image_url"],
+      lowImageUrl: json["low_image_url"],
       isOpen: json["is_open"],
       category: json["category"],
       distance: json["distance"],
@@ -65,6 +68,7 @@ class MapPointResponse {
       reviewsCount: reviewsCount,
       workHours: workHours,
       imageUrl: imageUrl,
+      lowImageUrl: lowImageUrl,
       isOpen: isOpen,
       category: category,
       distance: distance ?? this.distance,

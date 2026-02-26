@@ -22,11 +22,9 @@ class AwardsPage extends StatefulWidget {
 class _AwardsPageState extends State<AwardsPage> {
   static final now = DateTime.now();
   final totalItems = 30;
-  // final totalItems = now.difference(DateTime(now.year, now.month, 0)).inDays;
   late final PageController pageController;
   final ValueNotifier<DateTime> selectedDateNotifier = ValueNotifier(DateTime(now.year, now.month, now.day));
   int pageIndex = 0;
-  bool hasChanged = false;
 
   @override
   void initState() {
@@ -106,13 +104,11 @@ class _AwardsPageState extends State<AwardsPage> {
                                   IconButton(
                                     onPressed: selectedDate.subtract(Duration(days: 1)).isAfter(month)
                                         ? () {
-                                            selectedDateNotifier.value = selectedDate.subtract(Duration(days: 1));
-                                            hasChanged = true;
-                                            setState(() {});
                                             pageController.previousPage(
                                               duration: Duration(milliseconds: 600),
                                               curve: Curves.easeInOut,
                                             );
+                                            setState(() {});
                                           }
                                         : null,
                                     icon: Icon(Icons.arrow_back_ios),
@@ -120,13 +116,11 @@ class _AwardsPageState extends State<AwardsPage> {
                                   IconButton(
                                     onPressed: selectedDate.add(Duration(days: 1)).isBefore(now)
                                         ? () {
-                                            selectedDateNotifier.value = selectedDate.add(Duration(days: 1));
-                                            hasChanged = true;
-                                            setState(() {});
                                             pageController.nextPage(
                                               duration: Duration(milliseconds: 600),
                                               curve: Curves.easeInOut,
                                             );
+                                            setState(() {});
                                           }
                                         : null,
                                     icon: Icon(Icons.arrow_forward_ios),
@@ -147,17 +141,6 @@ class _AwardsPageState extends State<AwardsPage> {
                                 calendarFormat: CalendarFormat.week,
                                 headerStyle: HeaderStyle(titleCentered: true),
                                 headerVisible: false,
-                                // onDaySelected: (selectedDay, focusedDay) {
-                                //   print(
-                                //     'object page ${pageController.page} on day selected ${selectedDate.difference(focusedDay).inDays} and focusedDay $focusedDay selectedDate $selectedDate',
-                                //   );
-                                //   // pageController.animateToPage(
-                                //   //   pageController.page?.toInt() ?? 0,
-                                //   //   duration: Duration(minutes: 200),
-                                //   //   curve: Curves.easeInOut,
-                                //   // );
-                                //   selectedDateNotifier.value = focusedDay;
-                                // },
                                 calendarBuilders: CalendarBuilders(
                                   dowBuilder: (context, day) {
                                     final isCurrentDay = day.isSameDay(selectedDate);
@@ -293,7 +276,6 @@ class _AwardsPageState extends State<AwardsPage> {
                                   itemCount: totalItems,
                                   reverse: false,
                                   onPageChanged: (value) {
-                                    if (hasChanged) return;
                                     if (pageIndex < value) {
                                       selectedDateNotifier.value = selectedDate.add(Duration(days: 1));
                                     } else {
@@ -302,9 +284,6 @@ class _AwardsPageState extends State<AwardsPage> {
                                     pageIndex = value;
                                   },
                                   itemBuilder: (context, index) {
-                                    // final reversedIndex = totalItems - 1 - index;
-                                    // final day = DateTime(now.year, now.month, index + 1);
-
                                     final day = DateTime(now.year, now.month, now.day).subtract(Duration(days: totalItems - (index + 1)));
                                     final water = waterInMonth.firstWhere(
                                       (element) => element.date?.isSameDay(day) == true,

@@ -120,6 +120,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      extendBody: true,
       appBar: AppbarWidget(
         title: Text(
           'Личные данные',
@@ -345,7 +346,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         },
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: EdgeInsets.only(left: 15.r, right: 15.r, bottom: 30.h, top: 15.h),
         child: ValueListenableBuilder(
           valueListenable: loadingNotifier,
           builder: (context, isLoading, child) => ValueListenableBuilder(

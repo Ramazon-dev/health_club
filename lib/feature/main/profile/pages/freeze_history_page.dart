@@ -161,67 +161,6 @@ class _FreezeHistoryPageState extends State<FreezeHistoryPage> {
                                   freezeDaysLeft > 0) ...[
                                 SizedBox(height: 20.h),
                                 Divider(height: 1),
-                                // SizedBox(height: 20.h),
-                                // Align(
-                                //   alignment: Alignment.centerLeft,
-                                //   child: Text(
-                                //     'Контракт',
-                                //     style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14.sp, color: Colors.black),
-                                //   ),
-                                // ),
-                                // SizedBox(height: 10.h),
-                                // Row(
-                                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                //   children: [
-                                //     PrimaryButton2(
-                                //       onPressed: () {
-                                //         context.showDynamicDialog(
-                                //           widgets: [
-                                //             Text(
-                                //               'Успешно прошел',
-                                //               style: TextStyle(
-                                //                 fontSize: 16.sp,
-                                //                 fontWeight: FontWeight.w600,
-                                //                 color: ThemeColors.baseBlack,
-                                //               ),
-                                //             ),
-                                //             10.height,
-                                //             Text(
-                                //               'state.success',
-                                //               style: TextStyle(
-                                //                 fontSize: 14.sp,
-                                //                 fontWeight: FontWeight.w500,
-                                //                 color: ThemeColors.baseBlack,
-                                //               ),
-                                //             ),
-                                //             20.height,
-                                //             Text(
-                                //               DateTime.now().bookingDate(),
-                                //               style: TextStyle(
-                                //                 fontSize: 12.sp,
-                                //                 fontWeight: FontWeight.w400,
-                                //                 color: ThemeColors.baseBlack,
-                                //               ),
-                                //             ),
-                                //             20.height,
-                                //           ],
-                                //         );
-                                //         // context.router.push(RatingRoute());
-                                //       },
-                                //       text: 'Просмотреть',
-                                //       textSize: 14.sp,
-                                //       textColor: Colors.black,
-                                //       size: Size(0.4.sw, 47.h),
-                                //     ),
-                                //     PrimaryButton2(
-                                //       onPressed: () {},
-                                //       text: 'Скачать',
-                                //       textColor: Colors.black,
-                                //       textSize: 14.sp,
-                                //       size: Size(0.4.sw, 47.h),
-                                //     ),
-                                //   ],
-                                // ),
                                 SizedBox(height: 20.h),
                                 SecondaryButton(
                                   onPressed: () {
@@ -238,10 +177,11 @@ class _FreezeHistoryPageState extends State<FreezeHistoryPage> {
                                                 // final freezeDaysTotal = subscription?.freezeDaysTotal;
                                                 final range = rangeNotifier.value;
                                                 if (range != null) {
+                                                  print('object difference ${range.end.difference(range.start).inDays + 1} and ${freezeDaysLeft > range.end.difference(range.start).inDays}');
                                                   if (freezeDaysLeft > range.end.difference(range.start).inDays) {
                                                     context.router.maybePop();
                                                     freezeCubit.freezeSubscription(
-                                                      range.end.difference(range.start).inDays,
+                                                      range.end.difference(range.start).inDays + 1,
                                                       range.start.dateForRequest(),
                                                     );
                                                   } else {

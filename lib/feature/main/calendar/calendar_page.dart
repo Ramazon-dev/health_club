@@ -61,16 +61,14 @@ class _CalendarPageState extends State<CalendarPage> with TickerProviderStateMix
                     final DateTime endOfWeek = today.add(Duration(days: 7 - now.weekday + 1));
                     final inThisWeek = (date.isAfter(today) && (date.isBefore(endOfWeek)));
                     final allEvents = [...state.past, ...state.upcoming];
-                    final eventsInThisWeek = allEvents
-                        .where(
-                          (element) =>
-                              (element.date?.isAfter(startOfWeek) == true) &&
-                              (element.date?.isBefore(endOfWeek) == true),
-                        )
-                        .toList();
-                    print(
-                      'object calendar start of week $now and start of week $startOfWeek end of week $endOfWeek in this week $inThisWeek',
-                    );
+                    final eventsInThisWeek = allEvents.where((element) {
+                      if (element.type == 'reservation') {
+                        return (element.date?.isAfterOrSame(startOfWeek) == true) &&
+                            (element.date?.isBefore(endOfWeek) == true);
+                      } else {
+                        return false;
+                      }
+                    }).toList();
                     if (inThisWeek) {
                       return SignUpForPartnerWidget(selectedDate: date, isBookingsSpend: eventsInThisWeek.length < 2);
                     }

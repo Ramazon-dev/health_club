@@ -4,9 +4,7 @@ import 'package:health_club/app_bloc/app_bloc.dart';
 import 'package:health_club/domain/core/core.dart';
 import 'package:health_club/router/app_router.gr.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import '../../../data/storage/app_storage.dart';
 import '../../../design_system/design_system.dart';
-import '../../../di/init.dart';
 
 @RoutePage()
 class LoginPage extends StatefulWidget {
@@ -43,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
           // context.showSnackBar(state.verifyCode, backgroundColor: ThemeColors.primaryColor);
           context.router.push(PinPutRoute(phoneNumber: '${loginCubit.phonePrefix}${phoneNumberController.text}'));
         } else if (state is LoginWithPasswordSuccess) {
-          getIt<AppStorage>().setRegister(true);
           context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
         } else if (state is LoginError) {
           context.showSnackBar(state.message ?? 'error');
@@ -152,12 +149,15 @@ class _LoginPageState extends State<LoginPage> {
                       prefix: Text(loginCubit.phonePrefix, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
                     ),
                     validator: (value) {
+                      print('object value ${value?.length} value $value');
                       final digits = loginCubit.selectedCountryUz
                           ? phoneFormatterUz.getUnmaskedText()
                           : phoneFormatterKz.getUnmaskedText();
+                      print('object digits ${digits.length} digits $digits');
                       if (digits.isEmpty) {
                         return 'Введите номер телефона';
                       }
+                      print('object loginCubit.selectedCountryUz ${loginCubit.selectedCountryUz}');
                       if (loginCubit.selectedCountryUz) {
                         if (digits.length != 9) {
                           return 'Не правильный формат';
@@ -251,7 +251,7 @@ class _LoginPageState extends State<LoginPage> {
                             ? () async {
                                 if (selectedSms) {
                                   final validator = globalKey.currentState?.validate();
-                                  if (validator == true && phoneNumberController.text.length == 12) {
+                                  if (validator == true) {
                                     await loginCubit.login(
                                       '${loginCubit.phonePrefix}${phoneNumberController.text}'.replaceAll(' ', ''),
                                     );

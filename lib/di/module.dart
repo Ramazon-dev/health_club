@@ -29,7 +29,7 @@ abstract class Module {
   @lazySingleton
   @Named('public')
   Dio providePublicDio(LocalStorage localStorage) {
-    final baseOptions = BaseOptions(baseUrl: localStorage.getBaseUrl());
+    final baseOptions = BaseOptions(baseUrl: localStorage.getBaseUrl(), headers: {'Accept': 'application/json'});
     final dio = Dio(baseOptions);
 
     dio.interceptors.addAll([
@@ -42,7 +42,7 @@ abstract class Module {
 
   @lazySingleton
   Dio publicDio(TokenService tokenService, NetworkWatcher watcher, LocalStorage localStorage) {
-    final baseOptions = BaseOptions(baseUrl: localStorage.getBaseUrl());
+    final baseOptions = BaseOptions(baseUrl: localStorage.getBaseUrl(), headers: {'Accept': 'application/json'});
     final dio = Dio(baseOptions);
 
     dio.interceptors.addAll([

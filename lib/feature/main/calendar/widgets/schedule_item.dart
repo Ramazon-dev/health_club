@@ -71,7 +71,7 @@ class ScheduleItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              if (past.canCancel == true)
+              if (past.canCancel == true && past.type != 'place')
                 ButtonWithScale(
                   verticalPadding: 15.h,
                   horizontalPadding: 30.r,
@@ -92,13 +92,6 @@ class ScheduleItem extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20.h),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     PrimaryButton2(onPressed: () {}, text: 'Отменить', size: Size(0.4.sw, 50.h)),
-          //     PrimaryButton2(onPressed: () {}, text: 'Перенести', size: Size(0.4.sw, 50.h)),
-          //   ],
-          // ),
         ],
       ),
     );

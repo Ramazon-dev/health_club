@@ -87,16 +87,14 @@ class _FirstVisitBottomSheetState extends State<FirstVisitBottomSheet> {
                       }
                     },
                     selectedItemBuilder: (context) => state.wizardClubs.map((e) {
-                      return Text(
-                        e.title ?? '',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      );
+                      return Text(e.title ?? '', maxLines: 1, overflow: TextOverflow.ellipsis);
                     }).toList(),
 
                     items: state.wizardClubs
                         .map(
-                          (e) => DropdownMenuItem(
+                          (e) {
+                            print('object title: ${e.title} \naddress: ${e.address}');
+                            return DropdownMenuItem(
                             value: e,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,8 +108,9 @@ class _FirstVisitBottomSheetState extends State<FirstVisitBottomSheet> {
                                   ),
                                 ),
                                 Text(
-                                  e.address ?? '',
+                                  (e.address ?? '').replaceAll('\n', ' '),
                                   overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w400,
@@ -120,7 +119,8 @@ class _FirstVisitBottomSheetState extends State<FirstVisitBottomSheet> {
                                 ),
                               ],
                             ),
-                          ),
+                          );
+                          },
                         )
                         .toList(),
                     iconStyleData: IconStyleData(icon: Icon(Icons.keyboard_arrow_down, color: ThemeColors.base400)),
@@ -221,20 +221,29 @@ class _FirstVisitBottomSheetState extends State<FirstVisitBottomSheet> {
                   width: 0.45.sw,
                   height: 60.h,
                   color: ThemeColors.base100,
-                  onPressed: () {},
+                  onPressed: () {
+                    context.router.maybePop();
+                  },
                   text: 'Отмена',
                   textStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: ThemeColors.baseBlack),
                 ),
                 BlocConsumer<RegisterFirstVisitCubit, RegisterFirstVisitState>(
                   listener: (context, state) async {
                     final router = context.router;
+                    final firstTraining = context.read<FirstTrainingsCubit>();
+                    final calendar = context.read<CalendarCubit>();
                     if (state is RegisterFirstVisitLoaded) {
                       router.maybePop();
-                      await CustomSneakBar.show(
-                        context: context,
-                        status: SneakBarStatus.success,
-                        title: 'Визит забронирован, ожидайте подтверждения',
-                      );
+                      await context.read<ProfileCubit>().fetchProfile();
+                      await firstTraining.fetchTrainings();
+                      await calendar.fetchCalendar();
+                      if (context.mounted) {
+                        await CustomSneakBar.show(
+                          context: context,
+                          status: SneakBarStatus.success,
+                          title: 'Визит забронирован, ожидайте подтверждения',
+                        );
+                      }
                     } else if (state is RegisterFirstVisitError) {
                       router.maybePop();
                       await CustomSneakBar.show(

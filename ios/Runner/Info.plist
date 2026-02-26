@@ -32,19 +32,37 @@
 	<string>1.2.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>NSUserTrackingUsageDescription</key>
+    <string>Мы используем ваши данные для показа релевантной рекламы и оценки её эффективности.</string>
+    <key>FacebookAutoLogAppEventsEnabled</key>
+    <true/>
+    <key>FacebookAdvertiserIDCollectionEnabled</key>
+    <true/>
 	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.726097598092-2aohbhsu00srhut5qieijkrm92pj5i2a</string>
-			</array>
-		</dict>
-	</array>
+    <array>
+      <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>fb1264492279075627</string>
+      </array>
+      </dict>
+	  <dict>
+	  	<key>CFBundleTypeRole</key>
+	  	<string>Editor</string>
+	  	<key>CFBundleURLSchemes</key>
+	  	<array>
+	  		<string>com.googleusercontent.apps.726097598092-2aohbhsu00srhut5qieijkrm92pj5i2a</string>
+	  	</array>
+	  </dict>
+    </array>
+    <key>FacebookAppID</key>
+    <string>1264492279075627</string>
+    <key>FacebookClientToken</key>
+    <string>R91lWIoLQ91i92_S16vOlicpEeosw</string>
+    <key>FacebookDisplayName</key>
+    <string>35’ Health Clubs</string>
 	<key>CFBundleVersion</key>
-	<string>26</string>
+	<string>32</string>
 	<key>GIDClientID</key>
 	<string>726097598092-2aohbhsu00srhut5qieijkrm92pj5i2a.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>

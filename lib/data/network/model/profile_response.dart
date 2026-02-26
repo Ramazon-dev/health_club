@@ -53,14 +53,28 @@ class GoalsResponse {
 }
 
 class MonthProgress {
-  MonthProgress({required this.current, required this.target, required this.percent});
+  MonthProgress({
+    required this.current,
+    required this.target,
+    required this.percent,
+    required this.cycleStart,
+    required this.cycleEnd,
+  });
 
   final int? current;
   final int? target;
   final int? percent;
+  final DateTime? cycleStart;
+  final DateTime? cycleEnd;
 
   factory MonthProgress.fromJson(Map<String, dynamic> json) {
-    return MonthProgress(current: json["current"], target: json["target"], percent: json["percent"]);
+    return MonthProgress(
+      current: json["current"],
+      target: json["target"],
+      percent: json["percent"],
+      cycleStart: (json["cycle_start"] ?? '').toString().parse(),
+      cycleEnd: (json["cycle_end"] ?? '').toString().parse(),
+    );
   }
 }
 

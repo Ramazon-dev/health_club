@@ -4,11 +4,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 import 'package:health_club/app_bloc/app_bloc.dart';
+import 'package:health_club/domain/core/core.dart';
 import 'package:health_club/feature/main/search/widgets/booking_bottom_sheet.dart';
 
 import '../../../data/network/model/lat_long.dart';
 import '../../../design_system/design_system.dart';
-import '../../../domain/core/extensions/top_snackbar.dart';
 import '../../../domain/core/services/url_launcher_service.dart';
 
 @RoutePage()
@@ -198,6 +198,13 @@ class _FitnessPageState extends State<FitnessPage> {
                                 detail?.title ?? '',
                                 style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w500, color: Colors.black),
                               ),
+                              if (detail?.partnerType != null) ...[
+                                15.height,
+                                Text(
+                                  detail?.partnerType ?? '',
+                                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Colors.black),
+                                ),
+                              ],
                               // 5.height,
                               // Row(
                               //   children: [
@@ -308,13 +315,14 @@ class _FitnessPageState extends State<FitnessPage> {
                                           final DateTime startOfWeek = today.subtract(Duration(days: now.weekday - 1));
                                           final DateTime endOfWeek = today.add(Duration(days: 7 - now.weekday + 1));
                                           final allEvents = [...state.past, ...state.upcoming];
-                                          final eventsInThisWeek = allEvents
-                                              .where(
-                                                (element) =>
-                                                    (element.date?.isAfter(startOfWeek) == true) &&
-                                                    (element.date?.isBefore(endOfWeek) == true),
-                                              )
-                                              .toList();
+                                          final eventsInThisWeek = allEvents.where((element) {
+                                            if (element.type == 'reservation') {
+                                              return (element.date?.isAfterOrSame(startOfWeek) == true) &&
+                                                  (element.date?.isBefore(endOfWeek) == true);
+                                            } else {
+                                              return false;
+                                            }
+                                          }).toList();
                                           return ButtonWithScale(
                                             onPressed: () {
                                               final bookSlotCubit = context.read<BookSlotCubit>();
@@ -331,7 +339,7 @@ class _FitnessPageState extends State<FitnessPage> {
                                                         dateController: dateController,
                                                         extensionIsActive: extensionIsActive,
                                                         subscriptionIsActive: subscriptionIsActive,
-                                                        isBookingsSpend: eventsInThisWeek.length > 2,
+                                                        isBookingsSpend: eventsInThisWeek.length < 2,
                                                       ),
                                                     ],
                                                   );
@@ -591,7 +599,7 @@ class _FitnessPageState extends State<FitnessPage> {
                                             Row(
                                               children: [
                                                 CustomCachedNetworkImage(
-                                                  imageUrl: branch?.avatar,
+                                                  imageUrl: branch?.lowImageUrl,
                                                   borderRadius: BorderRadius.circular(100),
                                                   fit: BoxFit.contain,
                                                   width: 56.r,

@@ -32,8 +32,8 @@ class _MainPageState extends State<MainPage> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        if (tabsRouter?.activeIndex != 0) {
-          tabsRouter?.setActiveIndex(0);
+        if (tabsRouter?.activeIndex != 4) {
+          tabsRouter?.setActiveIndex(4);
 
           return;
         }
@@ -71,7 +71,6 @@ class _MainPageState extends State<MainPage> {
           homeIndex: 4,
           routes: [CalendarRoute(), MapRoute(), CalendarRoute(), AwardsRoute(), ProfileRoute()],
           backgroundColor: ThemeColors.base100,
-          // body: Column(),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButtonBuilder: (context, tabsRouter) {
             final isHide = tabsRouter.topRoute.meta['hideNavBar'] == true;

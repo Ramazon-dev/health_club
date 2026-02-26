@@ -12,7 +12,7 @@ class BookSlotCubit extends Cubit<BookSlotState> {
     emit(BookSlotLoading());
     final res = await _mainProvider.bookSlot(reservationId);
     if (res.data != null) {
-      emit(BookSlotLoaded());
+      emit(BookSlotLoaded('Бронирование подтверждено'));
     } else {
       emit(BookSlotError(res.message));
     }
@@ -22,7 +22,7 @@ class BookSlotCubit extends Cubit<BookSlotState> {
     emit(BookSlotLoading());
     final res = await _mainProvider.cancelBook(clientReservationId);
     if (res.data != null) {
-      emit(BookSlotLoaded());
+      emit(BookSlotLoaded('Бронирование отменено'));
     } else {
       emit(BookSlotError(res.message));
     }

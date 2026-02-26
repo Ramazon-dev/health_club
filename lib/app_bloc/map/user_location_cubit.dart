@@ -9,6 +9,7 @@ class UserLocationCubit extends Cubit<UserLocationState> {
   UserLocationCubit() : super(UserLocationInitial());
 
   Future<LatLng?> getUserLocation() async {
+    emit(UserLocationLoading());
     final latLng = await MapServiceUtils.getUserPosition();
     if (latLng != null) {
       if (!isClosed) {

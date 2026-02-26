@@ -41,11 +41,12 @@ class _TrainingHistoryPageState extends State<TrainingHistoryPage> with TickerPr
           } else if (state is TrainingHistoryError) {
             return Center(child: Text(state.message ?? ''));
           } else if (state is TrainingHistoryLoaded) {
-            final trainingHistories = state.trainingHistory;
-            final now = DateTime.now();
-            final upcoming = trainingHistories.where((element) => element.date?.isAfter(now) == true).toList();
-            final past = trainingHistories.where((element) => element.date?.isBefore(now) == true).toList();
-
+            // final trainingHistories = state.trainingHistory;
+            // final now = DateTime.now();
+            // final upcoming = trainingHistories.where((element) => element.date?.isAfter(now) == true).toList();
+            // final past = trainingHistories.where((element) => element.date?.isBefore(now) == true).toList();
+            final upcoming = state.upcoming;
+            final past = state.past;
             return SingleChildScrollView(
               padding: EdgeInsets.all(15.r),
               child: Column(

@@ -28,7 +28,12 @@ class NutritionDayCubit extends Cubit<NutritionDayState> {
     final res = await _mainProvider.uploadNutrition(image: file, type: type, title: title, text: text);
     final data = res.data;
     if (data != null) {
-      fetchNutrition();
+      if (data.analysis?.error != null) {
+        emit(NutritionDayError(data.analysis?.error));
+        fetchNutrition();
+      } else {
+        fetchNutrition();
+      }
     } else {
       emit(NutritionDayError(res.message));
     }

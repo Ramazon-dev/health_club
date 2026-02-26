@@ -51,7 +51,8 @@ class RegisterCubit extends Cubit<RegisterState> {
       }
     } else {
       getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
-      // emit(RegisterError(_wizardResponse, res.message));
+      // emit(RegisterName(_wizardResponse));
+      emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -69,7 +70,8 @@ class RegisterCubit extends Cubit<RegisterState> {
       }
     } else {
       getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
-      // emit(RegisterError(_wizardResponse, res.message));
+      // emit(RegisterConcerns(_wizardResponse, passed: true, options: this.concerns));
+      emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -84,7 +86,8 @@ class RegisterCubit extends Cubit<RegisterState> {
       emit(RegisterBodyDetails(_wizardResponse));
     } else {
       getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
-      // emit(RegisterError(_wizardResponse, res.message));
+      // emit(RegisterProblems(_wizardResponse, passed: true, options: problems));
+      emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -109,10 +112,13 @@ class RegisterCubit extends Cubit<RegisterState> {
         emit(RegisterBodyDetailsResult(_wizardResponse, bmi));
       } else {
         getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
+        emit(RegisterError(_wizardResponse, res.message));
+        // emit(RegisterBodyDetails(_wizardResponse));
       }
     } else {
       getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
-      // emit(RegisterError(_wizardResponse, res.message));
+      // emit(RegisterBodyDetails(_wizardResponse));
+      emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -126,6 +132,9 @@ class RegisterCubit extends Cubit<RegisterState> {
     if (options != null) {
       targets = options;
       emit(RegisterTarget(_wizardResponse, passed: true, options: options));
+    } else {
+      emit(RegisterError(_wizardResponse, ''));
+      // emit(RegisterGift(_wizardResponse));
     }
   }
 
@@ -139,7 +148,8 @@ class RegisterCubit extends Cubit<RegisterState> {
       emit(RegisterAddress(_wizardResponse));
     } else {
       getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
-      // emit(RegisterError(_wizardResponse, res.message));
+      // emit(RegisterTarget(_wizardResponse, passed: true, options: this.targets));
+      emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -154,7 +164,8 @@ class RegisterCubit extends Cubit<RegisterState> {
       }
     } else {
       getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
-      // emit(RegisterError(_wizardResponse, res.message));
+      // emit(RegisterAddress(_wizardResponse));
+      emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -164,8 +175,9 @@ class RegisterCubit extends Cubit<RegisterState> {
     if (res.data != null) {
       emit(RegisterSuccess(_wizardResponse));
     } else {
+      // emit(RegisterDiagnostics(_wizardResponse, clubs: clubs));
       getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
-      // emit(RegisterError(_wizardResponse, res.message));
+      emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -180,7 +192,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       }
     } else {
       getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
-      // emit(RegisterError(_wizardResponse, res.message));
+      emit(RegisterError(_wizardResponse, res.message));
     }
   }
 
@@ -189,7 +201,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     final clubs = res.data?.clubs;
     if (clubs != null) return clubs;
     getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(res.message);
-    // emit(RegisterError(_wizardResponse, res.message));
+    emit(RegisterError(_wizardResponse, res.message));
     return null;
   }
 
@@ -198,7 +210,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     final options = wizardOptionsResponse.data?.options;
     if (options != null) return options;
     getIt<AppRouter>().navigatorKey.currentContext?.showSnackBar(wizardOptionsResponse.message);
-    // emit(RegisterError(_wizardResponse, wizardOptionsResponse.message));
+    emit(RegisterError(_wizardResponse, wizardOptionsResponse.message));
     return null;
   }
 

@@ -2,8 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:health_club/app_bloc/app_bloc.dart';
 import 'package:health_club/design_system/design_system.dart';
-import 'package:health_club/domain/core/services/map_setvice_utils.dart';
 import 'package:health_club/feature/main/search/widgets/cluster.dart';
+import 'package:health_club/feature/main/search/widgets/markers_helper.dart';
 import 'package:health_club/router/app_router.gr.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
@@ -17,34 +17,50 @@ class MapView extends StatefulWidget {
   State<MapView> createState() => _MapViewState();
 }
 
-class _MapViewState extends State<MapView> {
+class _MapViewState extends State<MapView> with MarkersHelper {
   late final YandexMapController yandexMapController;
-  final _mapZoom = 0.0;
+  double _currentZoom = 14;
   List<PlacemarkMapObject> _placemarks = [];
   ClusterizedPlacemarkCollection? _clusterCollection;
 
-  void _buildMapObjects() {
-    _placemarks = points
-        .where((e) => e.lat != null && e.long != null)
-        .map(
-          (mapPoint) => PlacemarkMapObject(
-            mapId: MapObjectId('${mapPoint.id}'),
-            onTap: (mapObject, point) {
-              final userLocationState = context.read<UserLocationCubit>().state;
-              context.read<MapPointDetailCubit>().getMapPointDetail(
-                mapPoint.type ?? '',
-                mapPoint.id ?? 0,
-                (userLocationState is UserLocationLoaded) ? userLocationState.latLng : null,
-              );
-            },
-            point: Point(latitude: double.parse(mapPoint.lat ?? '0'), longitude: double.parse(mapPoint.long ?? '0')),
-            opacity: 1,
-            icon: PlacemarkIcon.single(mapPoint.type == 'place' ? _placeIcon : _defaultIcon),
-          ),
-        )
-        .toList();
+  Future<void> _buildMapObjects() async {
+    final List<PlacemarkMapObject> placemarks = [];
 
+    for (final mapPoint in points.where((e) => e.lat != null && e.long != null)) {
+      final lat = double.tryParse(mapPoint.lat ?? '');
+      final lon = double.tryParse(mapPoint.long ?? '');
+      if (lat == null || lon == null) continue;
+      late final PlacemarkIconStyle iconStyle;
+      if (mapPoint.type == 'place') {
+        iconStyle = _placeIcon;
+      } else {
+        final markerBytes = await markerCircleBytesFromUrl(mapPoint.imageUrl, size: 150);
+        iconStyle = (markerBytes != null)
+            ? PlacemarkIconStyle(image: BitmapDescriptor.fromBytes(markerBytes))
+            : _defaultIcon;
+      }
+      placemarks.add(
+        PlacemarkMapObject(
+          mapId: MapObjectId('${mapPoint.id}'),
+          onTap: (mapObject, point) {
+            final userLocationState = context.read<UserLocationCubit>().state;
+            context.read<MapPointDetailCubit>().getMapPointDetail(
+              mapPoint.type ?? '',
+              mapPoint.id ?? 0,
+              (userLocationState is UserLocationLoaded) ? userLocationState.latLng : null,
+            );
+          },
+          point: Point(latitude: lat, longitude: lon),
+          opacity: 1,
+          icon: PlacemarkIcon.single(iconStyle),
+        ),
+      );
+    }
+
+    _placemarks = placemarks;
     _clusterCollection = _getClusterizedCollection(placemarks: _placemarks);
+
+    if (mounted) setState(() {});
   }
 
   List<MapPointResponse> points = [];
@@ -76,34 +92,12 @@ class _MapViewState extends State<MapView> {
       onClusterTap: (self, cluster) async {
         await yandexMapController.moveCamera(
           animation: const MapAnimation(type: MapAnimationType.linear, duration: 0.3),
-          CameraUpdate.newCameraPosition(CameraPosition(target: cluster.placemarks.first.point, zoom: _mapZoom + 1)),
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: cluster.placemarks.first.point, zoom: _currentZoom + 1),
+          ),
         );
       },
     );
-    return res;
-  }
-
-  List<PlacemarkMapObject> _getPlacemarkObjects() {
-    final res = points.where((element) => (element.lat != null && element.long != null)).map((mapPoint) {
-      return PlacemarkMapObject(
-        mapId: MapObjectId('${mapPoint.id}'),
-        onTap: (mapObject, point) {
-          final userLocationState = context.read<UserLocationCubit>().state;
-          context.read<MapPointDetailCubit>().getMapPointDetail(
-            mapPoint.type ?? '',
-            mapPoint.id ?? 0,
-            (userLocationState is UserLocationLoaded) ? userLocationState.latLng : null,
-          );
-        },
-        point: Point(latitude: double.parse(mapPoint.lat ?? '0'), longitude: double.parse(mapPoint.long ?? '0')),
-        opacity: 1,
-        icon: PlacemarkIcon.single(
-          mapPoint.type == 'place'
-              ? PlacemarkIconStyle(image: BitmapDescriptor.fromAssetImage(AppAssets.marker35), scale: 0.8)
-              : PlacemarkIconStyle(image: BitmapDescriptor.fromAssetImage(AppAssets.marker), scale: 2),
-        ),
-      );
-    }).toList();
     return res;
   }
 
@@ -112,19 +106,21 @@ class _MapViewState extends State<MapView> {
 
   Future<void> _initIcons() async {
     _placeIcon = PlacemarkIconStyle(image: BitmapDescriptor.fromAssetImage(AppAssets.markerNew), scale: 0.7);
-    // _placeIcon = PlacemarkIconStyle(image: BitmapDescriptor.fromAssetImage(AppAssets.circlePin), scale: 0.25);
     _defaultIcon = PlacemarkIconStyle(image: BitmapDescriptor.fromAssetImage(AppAssets.marker), scale: 2);
   }
 
   @override
   void initState() {
-    _initIcons();
-    final state = context.read<MapPointsCubit>().state;
     context.read<UserLocationCubit>().requestLocationPermission();
-    if (state is MapPointsLoaded) {
-      points = state.points;
-      setState(() {});
-    }
+    final mapPointsCubit = context.read<MapPointsCubit>();
+    Future.microtask(() async {
+      await _initIcons();
+      final state = mapPointsCubit.state;
+      if (state is MapPointsLoaded) {
+        points = state.points;
+        await _buildMapObjects();
+      }
+    });
     super.initState();
   }
 
@@ -132,17 +128,19 @@ class _MapViewState extends State<MapView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocConsumer<MapPointsCubit, MapPointsState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is MapPointsLoaded) {
             points = state.points;
-            _buildMapObjects();
+            await _buildMapObjects();
           }
         },
         builder: (context, state) {
           final cluster = _clusterCollection;
           return YandexMap(
+            onCameraPositionChanged: (cameraPosition, reason, finished) {
+              _currentZoom = cameraPosition.zoom;
+            },
             mapObjects: cluster != null ? [cluster] : _placemarks,
-            // mapObjects: [_getClusterizedCollection(placemarks: _getPlacemarkObjects())],
             onMapCreated: (controller) async {
               yandexMapController = controller;
               onMapCreated();
@@ -160,6 +158,18 @@ class _MapViewState extends State<MapView> {
               status: SneakBarStatus.success,
               title: 'Вы не дали разришения на геолокацию',
             );
+          } else if (userLocationState is UserLocationLoaded) {
+            final location = userLocationState.latLng;
+            yandexMapController.moveCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(
+                  target: Point(latitude: location.lat, longitude: userLocationState.latLng.lng),
+                  zoom: 14,
+                ),
+              ),
+              animation: MapAnimation(duration: 0.4, type: MapAnimationType.linear),
+            );
+
           }
         },
         builder: (context, userLocationState) {
@@ -171,23 +181,36 @@ class _MapViewState extends State<MapView> {
               }
             },
             child: Padding(
-              padding: EdgeInsets.only(bottom: 0.37.sh),
+              padding: EdgeInsets.only(bottom: 0.4.sh),
               child: FloatingActionButton(
                 shape: CircleBorder(),
                 backgroundColor: Colors.white,
                 onPressed: () async {
-                  final userPosition = await MapServiceUtils.getUserPosition();
-                  print('object get user position result lat ${userPosition?.lat} long ${userPosition?.lng}');
-                  if (userPosition != null) {
+                  if (userLocationState is UserLocationLoaded) {
+                    final userPosition = userLocationState.latLng;
+                    // final userPosition = await MapServiceUtils.getUserPosition();
                     yandexMapController.moveCamera(
                       CameraUpdate.newCameraPosition(
                         CameraPosition(
                           target: Point(latitude: userPosition.lat, longitude: userPosition.lng),
-                          zoom: 17,
+                          zoom: 16,
                         ),
                       ),
                       animation: MapAnimation(duration: 0.4, type: MapAnimationType.linear),
                     );
+                  } else {
+                    final userPosition = await context.read<UserLocationCubit>().getUserLocation();
+                    if (userPosition != null) {
+                      yandexMapController.moveCamera(
+                        CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                            target: Point(latitude: userPosition.lat, longitude: userPosition.lng),
+                            zoom: 16,
+                          ),
+                        ),
+                        animation: MapAnimation(duration: 0.4, type: MapAnimationType.linear),
+                      );
+                    }
                   }
                 },
                 child: (userLocationState is UserLocationLoading)
@@ -202,9 +225,12 @@ class _MapViewState extends State<MapView> {
   }
 
   void onMapCreated() {
+    final selectedCountryIsUz = context.read<ProfileCubit>().selectedCountryUz;
+    final lat = selectedCountryIsUz ? 41.311296 : 51.128222;
+    final long = selectedCountryIsUz ? 69.279753 : 71.430576;
     yandexMapController.moveCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: Point(latitude: 41.311296, longitude: 69.279753), zoom: 14),
+        CameraPosition(target: Point(latitude: lat, longitude: long), zoom: 12),
       ),
       animation: MapAnimation(duration: 0.4, type: MapAnimationType.linear),
     );

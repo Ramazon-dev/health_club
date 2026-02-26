@@ -43,9 +43,17 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         BlocProvider.value(value: widget.bookSlotCubit),
       ],
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           20.height,
-          if (!widget.subscriptionIsActive)
+          if (!widget.subscriptionIsActive && !widget.extensionIsActive)
+            Center(
+              child: Text(
+                'Нет активной подписки Расширение PLUS',
+                style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14.sp, color: ThemeColors.statusRed),
+              ),
+            )
+          else if (!widget.subscriptionIsActive)
             Center(
               child: Text(
                 'Нет активной подписки',

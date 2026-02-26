@@ -20,7 +20,8 @@ class SubscriptionWidget extends StatefulWidget {
     required this.isActive,
     this.subscription,
     required this.lastname,
-    required this.isFrozen, required this.number,
+    required this.isFrozen,
+    required this.number,
   });
 
   @override
@@ -94,7 +95,7 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
               builder: (context, state) {
                 if (state is! FirstTrainingsLoaded) return Column(children: invitationWidget());
                 final trainings = state.trainings;
-                final training = trainings.firstWhereOrNull((element) => element.clientPhone ==  widget.number);
+                final training = trainings.firstWhereOrNull((element) => element.clientPhone == widget.number);
                 return Column(
                   children: [
                     if (training != null) ...[
@@ -205,6 +206,9 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
         onPressed: () {
           final wizardSlotsCubit = context.read<WizardSlotsCubit>();
           final wizardClubsCubit = context.read<WizardClubsCubit>();
+          final calendarCubit = context.read<CalendarCubit>();
+          final profileCubit = context.read<ProfileCubit>();
+          final firstTrainingsCubit = context.read<FirstTrainingsCubit>();
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
@@ -215,6 +219,9 @@ class _SubscriptionWidgetState extends State<SubscriptionWidget> {
                   providers: [
                     BlocProvider.value(value: wizardSlotsCubit),
                     BlocProvider.value(value: wizardClubsCubit),
+                    BlocProvider.value(value: calendarCubit),
+                    BlocProvider.value(value: profileCubit),
+                    BlocProvider.value(value: firstTrainingsCubit),
                     BlocProvider(create: (context) => getIt<RegisterFirstVisitCubit>()),
                   ],
                   child: FirstVisitBottomSheet(lastname: widget.lastname),

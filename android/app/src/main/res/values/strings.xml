@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_app_id">1264492279075627</string>
+    <string name="facebook_client_token">R91lWIoLQ91i92_S16vOlicpEeosw</string>
+    <string name="fb_login_protocol_scheme">fb1264492279075627</string>
+    <string name="app_name">35’ Health Clubs</string>
+</resources>

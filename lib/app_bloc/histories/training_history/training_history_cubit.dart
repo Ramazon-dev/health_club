@@ -1,6 +1,6 @@
 import 'package:health_club/data/network/provider/main_provider.dart';
 
-import '../../../data/network/model/history/training_history_response.dart';
+import '../../../data/network/model/calendar_response.dart';
 import '../../app_bloc.dart';
 
 part 'training_history_state.dart';
@@ -14,10 +14,10 @@ class TrainingHistoryCubit extends Cubit<TrainingHistoryState> {
 
   Future<void> fetchTraining() async {
     emit(TrainingHistoryLoading());
-    final res = await _mainProvider.getTrainingHistory();
+    final res = await _mainProvider.getCalendar();
     final data = res.data;
     if (data != null) {
-      emit(TrainingHistoryLoaded(data));
+      emit(TrainingHistoryLoaded(upcoming: data.upcoming, past: data.past));
     } else {
       emit(TrainingHistoryError(res.message));
     }

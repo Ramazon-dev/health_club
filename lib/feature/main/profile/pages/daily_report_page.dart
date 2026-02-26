@@ -34,6 +34,10 @@ class _DailyReportPageState extends State<DailyReportPage> {
   final ValueNotifier<List<String>?> lunchNetworkImageNotifier = ValueNotifier(null);
   final ValueNotifier<List<String>?> dinnerNetworkImageNotifier = ValueNotifier(null);
 
+  bool uploadBreakfast = false;
+  bool uploadLunch = false;
+  bool uploadDinner = false;
+
   Future<File?> _pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
@@ -102,6 +106,7 @@ class _DailyReportPageState extends State<DailyReportPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      extendBody: true,
       appBar: AppbarWidget(
         title: Text(
           'Мое питание',
@@ -123,7 +128,44 @@ class _DailyReportPageState extends State<DailyReportPage> {
             dinnerTextController.text = '';
             initializeNutrition(state.nutrition);
             context.read<NutritionHistoryCubit>().fetchHistory();
-            CustomSneakBar.show(context: context, status: SneakBarStatus.success, title: 'Фото успешно добавлено');
+            final nutrition = state.nutrition;
+            print('object breakfast $uploadBreakfast lunch $uploadLunch dinner $uploadDinner');
+            if (uploadBreakfast) {
+              if (nutrition.breakfast?.analysis?.error != null) {
+                CustomSneakBar.show(
+                  context: context,
+                  status: SneakBarStatus.error,
+                  title: nutrition.breakfast?.analysis?.error ?? '',
+                );
+              } else {
+                // CustomSneakBar.show(context: context, status: SneakBarStatus.success, title: 'Фото успешно добавлено');
+              }
+            }
+            if (uploadLunch) {
+              if (nutrition.lunch?.analysis?.error != null) {
+                CustomSneakBar.show(
+                  context: context,
+                  status: SneakBarStatus.error,
+                  title: nutrition.lunch?.analysis?.error ?? '',
+                );
+              } else {
+                // CustomSneakBar.show(context: context, status: SneakBarStatus.success, title: 'Фото успешно добавлено');
+              }
+            }
+            if (uploadDinner) {
+              if (nutrition.dinner?.analysis?.error != null) {
+                CustomSneakBar.show(
+                  context: context,
+                  status: SneakBarStatus.error,
+                  title: nutrition.dinner?.analysis?.error ?? '',
+                );
+              } else {
+                // CustomSneakBar.show(context: context, status: SneakBarStatus.success, title: 'Фото успешно добавлено');
+              }
+            }
+            uploadBreakfast = false;
+            uploadLunch = false;
+            uploadDinner = false;
           } else if (state is NutritionDayError) {
             final message = state.message;
             if (message != null) {
@@ -298,6 +340,8 @@ class _DailyReportPageState extends State<DailyReportPage> {
                         onPressed: image == null
                             ? null
                             : () {
+                                uploadBreakfast = true;
+                                setState(() {});
                                 if (breakfastTitleController.text.isEmpty) {
                                   context.showSnackBar('Введите Название еды');
                                 } else if (breakfastTextController.text.isEmpty) {
@@ -533,6 +577,8 @@ class _DailyReportPageState extends State<DailyReportPage> {
                         onPressed: image == null
                             ? null
                             : () {
+                                uploadLunch = true;
+                                setState(() {});
                                 if (lunchTitleController.text.isEmpty) {
                                   context.showSnackBar('Введите Название еды');
                                 } else if (lunchTextController.text.isEmpty) {
@@ -768,6 +814,8 @@ class _DailyReportPageState extends State<DailyReportPage> {
                         onPressed: image == null
                             ? null
                             : () {
+                                uploadDinner = true;
+                                setState(() {});
                                 if (dinnerTitleController.text.isEmpty) {
                                   context.showSnackBar('Введите Название еды');
                                 } else if (dinnerTextController.text.isEmpty) {
@@ -935,7 +983,7 @@ class _DailyReportPageState extends State<DailyReportPage> {
         },
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(15.r),
+        padding: EdgeInsets.only(left: 15.r, right: 15.r, bottom: 30.h, top: 15.h),
         child: ButtonWithScale(
           onPressed: () {
             context.router.pop('setActiveIndex');

@@ -109,18 +109,9 @@ class _PinPutPageState extends State<PinPutPage> {
             Center(
               child: ResendCodeTimer(
                 controller: timerController,
-                onTap: () {
-                  // timerController.start();
-                  // final lang = Localizations.localeOf(context).languageCode;
-                  // context.read<AuthBloc>().add(
-                  //   SendOtpEvent(
-                  //     phone: widget.phone,
-                  //     lang: lang,
-                  //     genericError: context.lang!.genericError,
-                  //     noInternetError: context.lang!.noInternetError,
-                  //     unexpectedError: context.lang!.unexpectedError,
-                  //   ),
-                  // );
+                onTap: () async {
+                  timerController.start();
+                  await context.read<OtpVerifyCubit>().sentAgain(widget.phoneNumber.replaceAll(' ', ''));
                 },
               ),
             ),
@@ -137,12 +128,11 @@ class _PinPutPageState extends State<PinPutPage> {
                 predicate: (route) => false,
               );
             } else {
-              context.router.pushAndPopUntil(
-                RegisterRoute(step: state.verifyResult.step ?? 0),
-                predicate: (route) => false,
-              );
-              // context.router.push(RegisterRoute(step: state.verifyResult.step ?? 0));
-              // context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
+              // context.router.pushAndPopUntil(
+              //   RegisterRoute(step: state.verifyResult.step ?? 0),
+              //   predicate: (route) => false,
+              // );
+              context.router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
             }
           } else if (state is OtpVerifyError) {
             context.showSnackBar(state.message ?? 'error');

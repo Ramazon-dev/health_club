@@ -26,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
           if (isRegistered) {
             router.pushAndPopUntil(MainWrapper(), predicate: (route) => false);
           } else {
-            router.push(OnBoardingRoute());
+            // router.push(OnBoardingRoute());
+            router.pushAndPopUntil(RegisterRoute(step: 0), predicate: (route) => false);
           }
         } else {
           router.push(OnBoardingRoute());

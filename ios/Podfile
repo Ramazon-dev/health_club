@@ -35,6 +35,12 @@ target 'Runner' do
   target 'RunnerTests' do
     inherit! :search_paths
   end
+
+  pod 'FBSDKCoreKit', '~> 18.0.0'
+  pod 'FBSDKLoginKit', '~> 18.0.0'
+  pod 'FBSDKShareKit', '~> 18.0.0'
+  pod 'FBSDKGamingServicesKit', '~> 18.0.0'
+
 end
 
 post_install do |installer|

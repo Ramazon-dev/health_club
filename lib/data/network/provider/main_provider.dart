@@ -63,7 +63,7 @@ abstract class MainProvider extends BaseProvider {
 
   Future<ApiResponse<NutritionDiaryResponse>> getNutritionDay();
 
-  Future<ApiResponse<bool>> uploadNutrition({
+  Future<ApiResponse<BreakfastResponse>> uploadNutrition({
     required File image,
     required String type,
     required String title,

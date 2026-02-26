@@ -18,9 +18,17 @@ class OtpVerifyCubit extends Cubit<OtpVerifyState> {
     if (data != null) {
       final token = data.token;
       storage.setAccessToken(token ?? '');
-      storage.setRegister(true);
+      storage.setRegister(data.wizard == false);
       emit(OtpVerifySuccess(data));
     } else {
+      emit(OtpVerifyError(res.message));
+    }
+  }
+
+  Future<void> sentAgain(String phone) async {
+    final res = await authProvider.login(phone, null);
+    final data = res.data;
+    if (data == null) {
       emit(OtpVerifyError(res.message));
     }
   }

@@ -216,6 +216,7 @@ class _TargetWidgetState extends State<TargetWidget> {
                       ],
                       _ProgressRow(
                         label: 'Процент жира',
+                        subtitle: '%',
                         current: forecast.current?.fatPercent ?? 0,
                         start: forecast.start?.fatPercent ?? 0,
                         total: forecast.target?.targetBodyFatPercent ?? 0,
@@ -224,6 +225,7 @@ class _TargetWidgetState extends State<TargetWidget> {
                       10.height,
                       _ProgressRow(
                         label: 'Мышечная масса',
+                        subtitle: 'Кг',
                         current: forecast.current?.muscleMassKg ?? 0,
                         start: forecast.start?.muscleMassKg ?? 0,
                         total: forecast.target?.targetMuscleMassKg ?? 0,
@@ -233,6 +235,7 @@ class _TargetWidgetState extends State<TargetWidget> {
                       10.height,
                       _ProgressRow(
                         label: 'Общая масса',
+                        subtitle: 'Кг',
                         current: forecast.current?.weightKg ?? 0,
                         start: forecast.start?.weightKg ?? 0,
                         total: forecast.target?.targetTotalWeightKg ?? 0,
@@ -253,6 +256,7 @@ class _TargetWidgetState extends State<TargetWidget> {
 
 class _ProgressRow extends StatelessWidget {
   final String label;
+  final String subtitle;
   final num start;
   final num current;
   final num total;
@@ -260,6 +264,7 @@ class _ProgressRow extends StatelessWidget {
 
   const _ProgressRow({
     required this.label,
+    required this.subtitle,
     required this.start,
     required this.current,
     required this.total,
@@ -268,8 +273,7 @@ class _ProgressRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double progress = total == 0 ? 0 : current / total;
-
+    final double progress = total == start ? 0 : ((current - start) / (total - start)).clamp(0, 1).toDouble();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -279,7 +283,7 @@ class _ProgressRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '$label: $current',
+                '$label: $current $subtitle',
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.white),
               ),
               6.height,
@@ -300,11 +304,11 @@ class _ProgressRow extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Начало: $start',
+                    'Начало: $start $subtitle',
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.white),
                   ),
                   Text(
-                    'Цель: $total',
+                    'Цель: $total $subtitle',
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.white),
                   ),
                 ],
