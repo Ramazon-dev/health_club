@@ -174,7 +174,7 @@ class _BottomAppBarWidgetState extends State<BottomAppBarWidget> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final bool isMaterial3 = theme.useMaterial3;
-    final BottomAppBarTheme babTheme = BottomAppBarTheme.of(context);
+    final BottomAppBarThemeData babTheme = BottomAppBarTheme.of(context);
     final BottomAppBarTheme defaults = isMaterial3 ? _BottomAppBarDefaultsM3(context) : _BottomAppBarDefaultsM2(context);
 
     final bool hasFab = Scaffold.of(context).hasFloatingActionButton;
