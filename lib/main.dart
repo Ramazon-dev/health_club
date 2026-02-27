@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
+import 'package:health_club/data/storage/app_storage.dart';
 import 'package:health_club/domain/core/services/facebook_events.dart';
 import 'package:health_club/router/app_router.dart';
 import 'package:hive_ce/hive.dart';
@@ -18,7 +19,7 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
 
-   Hive.init((await getApplicationDocumentsDirectory()).path);
+  Hive.init((await getApplicationDocumentsDirectory()).path);
   final rawBox = await Hive.openBox('AppBox');
   final localStorage = LocalStorage(rawBox);
 
@@ -29,16 +30,60 @@ void main() async {
   AppBloc.init();
   await FacebookEventsService.init(autoLog: true, advertiserTracking: false);
 
-  runApp(const MyApp());
+  runApp(const RestartWidget(child: MyApp()));
 }
 
-// 49bc56a3-1943-4c80-b687-9e92e5859053
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RestartWidget extends StatefulWidget {
+  final Widget child;
+
+  const RestartWidget({super.key, required this.child});
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
+  }
+
+  @override
+  State<RestartWidget> createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final router = GetIt.I.get<AppRouter>();
+    return KeyedSubtree(key: key, child: widget.child);
+  }
+}
+
+// 49bc56a3-1943-4c80-b687-9e92e5859053
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final AppRouter router;
+  late final Future<bool> _devModeFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    router = GetIt.I.get<AppRouter>();
+    _devModeFuture = getIt<AppStorage>().getDeveloperMode(); // <-- один раз
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -107,15 +152,23 @@ class MyApp extends StatelessWidget {
             // GetIt.I.get<Alice>().setNavigatorKey(router.navigatorKey);
 
             // return child ?? SizedBox();
-            return FlavorBanner(
-              name: 'Beauty Business',
-              show: false,
-              child: DraggableAliceButton(
-                child: child ?? const SizedBox.shrink(),
-                onPressed: () => aliceFactory.alice.isInspectorOpened
-                    ? aliceFactory.alice.getNavigatorKey()?.currentContext?.maybePop()
-                    : aliceFactory.alice.showInspector(),
-              ),
+            return FutureBuilder(
+              future: _devModeFuture,
+              builder: (context, snapshot) {
+                final isDeveloperMode = snapshot.data ?? false;
+                return !isDeveloperMode
+                    ? (child ?? SizedBox())
+                    : FlavorBanner(
+                        name: 'Beauty Business',
+                        show: false,
+                        child: DraggableAliceButton(
+                          child: child ?? const SizedBox.shrink(),
+                          onPressed: () => aliceFactory.alice.isInspectorOpened
+                              ? aliceFactory.alice.getNavigatorKey()?.currentContext?.maybePop()
+                              : aliceFactory.alice.showInspector(),
+                        ),
+                      );
+              },
             );
           },
         ),

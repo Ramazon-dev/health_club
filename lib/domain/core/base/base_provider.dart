@@ -14,7 +14,7 @@ abstract class BaseProvider {
       }) async {
     try {
       final response = await request;
-      print('object response ${response.data}');
+      // print('object response ${response.data}');
       return ApiResponse(dataFromJson(response.data));
     } on DioException catch (e, s) {
       print('object dio catch exception e message ${e.message}');

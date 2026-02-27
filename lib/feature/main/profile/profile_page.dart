@@ -9,7 +9,11 @@ import 'package:health_club/feature/main/profile/widgets/extension_widget.dart';
 import 'package:health_club/feature/main/profile/widgets/profile_processing_widget.dart';
 import 'package:health_club/feature/main/profile/widgets/subscription_widget.dart';
 import 'package:health_club/feature/main/profile/widgets/target_widget.dart';
+import 'package:health_club/main.dart';
 import 'package:health_club/router/app_router.gr.dart';
+
+import '../../../data/storage/app_storage.dart';
+import '../../../di/init.dart';
 
 @RoutePage()
 class ProfilePage extends StatefulWidget {
@@ -20,6 +24,41 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  int startTap = timeNow;
+  int countTap = 0;
+
+  static const int serialTaps = 8;
+  static const int tapDurationInMs = 4000;
+
+  static int get timeNow => DateTime.now().millisecondsSinceEpoch;
+
+  Future<void> _navigateAlice(BuildContext context) async {
+    final now = timeNow;
+    final userExceededTapDuration = now - startTap > tapDurationInMs;
+
+    if (userExceededTapDuration) {
+      countTap = 0;
+      startTap = now;
+    }
+
+    countTap++;
+    //
+    if (countTap == serialTaps) {
+      final appStorage = getIt<AppStorage>();
+      final developerMode = await appStorage.getDeveloperMode();
+      if (developerMode) {
+        await appStorage.setDeveloperMode(!developerMode);
+        context.showSnackBar('Developer mode выключен', backgroundColor: Colors.green);
+        RestartWidget.restartApp(context);
+      } else {
+        await appStorage.setDeveloperMode(!developerMode);
+        context.showSnackBar('Developer mode включен', backgroundColor: Colors.green);
+        RestartWidget.restartApp(context);
+      }
+      // NavigationUtils.getMainNavigator().navigateAlice();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,37 +93,24 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(width: 56.r),
-                            // InkWell(
-                            //   onTap: () {
-                            //     context.router.push(NotificationsRoute());
-                            //   },
-                            //   child: Container(
-                            //     height: 56.h,
-                            //     width: 56.r,
-                            //     padding: EdgeInsets.all(16.r),
-                            //     decoration: BoxDecoration(
-                            //       borderRadius: BorderRadius.circular(16.r),
-                            //       color: Colors.white24,
-                            //     ),
-                            //     child: SvgPicture.asset(
-                            //       AppAssets.notification,
-                            //       colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                            //     ),
-                            //   ),
-                            // ),
-                            // 'https://static.vecteezy.com/system/resources/thumbnails/065/615/845/small/portrait-of-a-woman-with-long-hair-against-a-vibrant-urban-background-at-night-photo.jpeg',
                             if (avatar != null && avatar.isNotEmpty)
-                              AppNetworkImage(
-                                imageUrl: avatar,
-                                height: 100.r,
-                                width: 100.r,
-                                borderRadius: BorderRadius.circular(100),
+                              GestureDetector(
+                                onTap: () => _navigateAlice(context),
+                                child: AppNetworkImage(
+                                  imageUrl: avatar,
+                                  height: 100.r,
+                                  width: 100.r,
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
                               )
                             else
-                              CircleAvatar(
-                                radius: 50.r,
-                                backgroundColor: Colors.cyanAccent,
-                                child: Icon(Icons.person, color: ThemeColors.baseBlack, size: 40.r),
+                              GestureDetector(
+                                onTap: () => _navigateAlice(context),
+                                child: CircleAvatar(
+                                  radius: 50.r,
+                                  backgroundColor: Colors.cyanAccent,
+                                  child: Icon(Icons.person, color: ThemeColors.baseBlack, size: 40.r),
+                                ),
                               ),
                             InkWell(
                               onTap: () {
@@ -99,10 +125,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   color: Colors.white24,
                                 ),
                                 child: Icon(Icons.menu, color: Colors.white),
-                                // child: SvgPicture.asset(
-                                //   AppAssets.settings,
-                                //   colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                                // ),
                               ),
                             ),
                           ],

@@ -42,6 +42,11 @@ class AppStorage {
     await shared.setBool('register', register);
   }
 
+  Future<void> setDeveloperMode(bool mode) async {
+    final shared = await SharedPreferences.getInstance();
+    await shared.setBool('developerMode', mode);
+  }
+
   Future<String> getLang(String lang) async {
     final shared = await SharedPreferences.getInstance();
     return shared.getString('lang') ?? 'ru';
@@ -50,6 +55,11 @@ class AppStorage {
   Future<bool> getRegister() async {
     final shared = await SharedPreferences.getInstance();
     return shared.getBool('register') ?? false;
+  }
+
+  Future<bool> getDeveloperMode() async {
+    final shared = await SharedPreferences.getInstance();
+    return shared.getBool('developerMode') ?? false;
   }
 
   Future<String> getCountry() async {
